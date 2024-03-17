@@ -1,0 +1,822 @@
+2023-03-12 12:37:23.472 | ERROR    | __main__:<module>:4 - An error has been caught in function '<module>', process 'MainProcess' (21676), thread 'MainThread' (12568):
+Traceback (most recent call last):
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 715, in connect
+    sock = self.retry.call_with_retry(
+           │    │     └ <function Retry.call_with_retry at 0x000001603FB6DAF0>
+           │    └ <redis.retry.Retry object at 0x000001604024A400>
+           └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\retry.py", line 46, in call_with_retry
+    return do()
+           └ <function Connection.connect.<locals>.<lambda> at 0x000001603BB6F3A0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 716, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+            │    │                         │    └ <function Connection.disconnect at 0x000001603FB74430>
+            │    │                         └ Connection<host=127.0.0.1,port=6379,db=0>
+            │    └ <function Connection._connect at 0x000001603FB741F0>
+            └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 781, in _connect
+    raise err
+          └ ConnectionRefusedError(10061, '由于目标计算机积极拒绝，无法连接。', None, 10061, None)
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 769, in _connect
+    sock.connect(socket_address)
+    │    │       └ ('127.0.0.1', 6379)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0>
+
+ConnectionRefusedError: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+> File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\代理池\ProxyPool\proxytest.py", line 4, in <module>
+    getter.run()
+    │      └ <function Getter.run at 0x000001604026EDC0>
+    └ <proxypool.getter.Getter object at 0x000001603C2FB820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\代理池\ProxyPool\proxypool\getter.py", line 24, in run
+    if not self.is_full():
+           │    └ <function Getter.is_full at 0x000001604026ECA0>
+           └ <proxypool.getter.Getter object at 0x000001603C2FB820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\代理池\ProxyPool\proxypool\getter.py", line 19, in is_full
+    return self.redis.count() >= PROXY_NUMBER_MAX
+           │    │     │          └ 50000
+           │    │     └ <function RedisClient.count at 0x000001603FDF1280>
+           │    └ <proxypool.db.RedisClient object at 0x000001603F54B430>
+           └ <proxypool.getter.Getter object at 0x000001603C2FB820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\代理池\ProxyPool\proxypool\db.py", line 72, in count
+    return self.db.zcard(REDIS_KEY)
+           │    │  │     └ 'proxies:universal'
+           │    │  └ <function SortedSetCommands.zcard at 0x000001603F9D8550>
+           │    └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+           └ <proxypool.db.RedisClient object at 0x000001603F54B430>
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\commands\core.py", line 4096, in zcard
+    return self.execute_command("ZCARD", name)
+           │    │                        └ 'proxies:universal'
+           │    └ <function Redis.execute_command at 0x000001603FB8C790>
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\client.py", line 1255, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+           │    │             │    │              │               └ {}
+           │    │             │    │              └ 'ZCARD'
+           │    │             │    └ <function ConnectionPool.get_connection at 0x000001603FB75160>
+           │    │             └ ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>
+           │    └ None
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 1481, in get_connection
+    connection.connect()
+    │          └ <function Connection.connect at 0x000001603FB74160>
+    └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 721, in connect
+    raise ConnectionError(self._error_message(e))
+          │               │    └ <function Connection._error_message at 0x000001603FB74310>
+          │               └ Connection<host=127.0.0.1,port=6379,db=0>
+          └ <class 'redis.exceptions.ConnectionError'>
+
+redis.exceptions.ConnectionError: Error 10061 connecting to 127.0.0.1:6379. 由于目标计算机积极拒绝，无法连接。.
+2023-03-12 12:37:44.791 | ERROR    | proxypool.scheduler:run_getter:43 - An error has been caught in function 'run_getter', process 'Process-2' (20520), thread 'MainThread' (10036):
+Traceback (most recent call last):
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 715, in connect
+    sock = self.retry.call_with_retry(
+           │    │     └ <function Retry.call_with_retry at 0x000001B690CAE1F0>
+           │    └ <redis.retry.Retry object at 0x000001B6914C4FD0>
+           └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\retry.py", line 46, in call_with_retry
+    return do()
+           └ <function Connection.connect.<locals>.<lambda> at 0x000001B690324310>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 716, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+            │    │                         │    └ <function Connection.disconnect at 0x000001B690CB5AF0>
+            │    │                         └ Connection<host=127.0.0.1,port=6379,db=0>
+            │    └ <function Connection._connect at 0x000001B690CB58B0>
+            └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 781, in _connect
+    raise err
+          └ ConnectionRefusedError(10061, '由于目标计算机积极拒绝，无法连接。', None, 10061, None)
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 769, in _connect
+    sock.connect(socket_address)
+    │    │       └ ('127.0.0.1', 6379)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0>
+
+ConnectionRefusedError: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "<string>", line 1, in <module>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\spawn.py", line 116, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+               │     │   └ 180
+               │     └ 3
+               └ <function _main at 0x000001B690323E50>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\spawn.py", line 129, in _main
+    return self._bootstrap(parent_sentinel)
+           │    │          └ 180
+           │    └ <function BaseProcess._bootstrap at 0x000001B690303A60>
+           └ <Process name='Process-2' parent=22308 started>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\process.py", line 315, in _bootstrap
+    self.run()
+    │    └ <function BaseProcess.run at 0x000001B6903030D0>
+    └ <Process name='Process-2' parent=22308 started>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Process name='Process-2' parent=22308 started>
+    │    │        │    └ ()
+    │    │        └ <Process name='Process-2' parent=22308 started>
+    │    └ <bound method Scheduler.run_getter of <proxypool.scheduler.Scheduler object at 0x000001B690319F40>>
+    └ <Process name='Process-2' parent=22308 started>
+
+> File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\代理池\ProxyPool\proxypool\scheduler.py", line 43, in run_getter
+    getter.run()
+    │      └ <function Getter.run at 0x000001B6912FBAF0>
+    └ <proxypool.getter.Getter object at 0x000001B6902FA970>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\代理池\ProxyPool\proxypool\getter.py", line 24, in run
+    if not self.is_full():
+           │    └ <function Getter.is_full at 0x000001B6912FB9D0>
+           └ <proxypool.getter.Getter object at 0x000001B6902FA970>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\代理池\ProxyPool\proxypool\getter.py", line 19, in is_full
+    return self.redis.count() >= PROXY_NUMBER_MAX
+           │    │     │          └ 50000
+           │    │     └ <function RedisClient.count at 0x000001B690EEE940>
+           │    └ <proxypool.db.RedisClient object at 0x000001B690319B50>
+           └ <proxypool.getter.Getter object at 0x000001B6902FA970>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\代理池\ProxyPool\proxypool\db.py", line 72, in count
+    return self.db.zcard(REDIS_KEY)
+           │    │  │     └ 'proxies:universal'
+           │    │  └ <function SortedSetCommands.zcard at 0x000001B690C6FC10>
+           │    └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+           └ <proxypool.db.RedisClient object at 0x000001B690319B50>
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\commands\core.py", line 4096, in zcard
+    return self.execute_command("ZCARD", name)
+           │    │                        └ 'proxies:universal'
+           │    └ <function Redis.execute_command at 0x000001B690CC41F0>
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\client.py", line 1255, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+           │    │             │    │              │               └ {}
+           │    │             │    │              └ 'ZCARD'
+           │    │             │    └ <function ConnectionPool.get_connection at 0x000001B690CB8820>
+           │    │             └ ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>
+           │    └ None
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 1481, in get_connection
+    connection.connect()
+    │          └ <function Connection.connect at 0x000001B690CB5820>
+    └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 721, in connect
+    raise ConnectionError(self._error_message(e))
+          │               │    └ <function Connection._error_message at 0x000001B690CB59D0>
+          │               └ Connection<host=127.0.0.1,port=6379,db=0>
+          └ <class 'redis.exceptions.ConnectionError'>
+
+redis.exceptions.ConnectionError: Error 10061 connecting to 127.0.0.1:6379. 由于目标计算机积极拒绝，无法连接。.
+2023-03-12 13:02:44.211 | ERROR    | __main__:<module>:4 - An error has been caught in function '<module>', process 'MainProcess' (8752), thread 'MainThread' (18248):
+Traceback (most recent call last):
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 715, in connect
+    sock = self.retry.call_with_retry(
+           │    │     └ <function Retry.call_with_retry at 0x00000185300BEAF0>
+           │    └ <redis.retry.Retry object at 0x00000185307BE460>
+           └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\retry.py", line 46, in call_with_retry
+    return do()
+           └ <function Connection.connect.<locals>.<lambda> at 0x000001852C0CF3A0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 716, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+            │    │                         │    └ <function Connection.disconnect at 0x00000185300C5430>
+            │    │                         └ Connection<host=127.0.0.1,port=6379,db=0>
+            │    └ <function Connection._connect at 0x00000185300C51F0>
+            └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 781, in _connect
+    raise err
+          └ ConnectionRefusedError(10061, '由于目标计算机积极拒绝，无法连接。', None, 10061, None)
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 769, in _connect
+    sock.connect(socket_address)
+    │    │       └ ('127.0.0.1', 6379)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0>
+
+ConnectionRefusedError: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+> File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\代理池\ProxyPool\proxytest.py", line 4, in <module>
+    getter.run()
+    │      └ <function Getter.run at 0x00000185307E7940>
+    └ <proxypool.getter.Getter object at 0x000001852C85B820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\代理池\ProxyPool\proxypool\getter.py", line 24, in run
+    if not self.is_full():
+           │    └ <function Getter.is_full at 0x00000185307E7820>
+           └ <proxypool.getter.Getter object at 0x000001852C85B820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\代理池\ProxyPool\proxypool\getter.py", line 19, in is_full
+    return self.redis.count() >= PROXY_NUMBER_MAX
+           │    │     │          └ 50000
+           │    │     └ <function RedisClient.count at 0x0000018530343280>
+           │    └ <proxypool.db.RedisClient object at 0x000001852FA9D430>
+           └ <proxypool.getter.Getter object at 0x000001852C85B820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\代理池\ProxyPool\proxypool\db.py", line 72, in count
+    return self.db.zcard(REDIS_KEY)
+           │    │  │     └ 'proxies:universal'
+           │    │  └ <function SortedSetCommands.zcard at 0x000001852FF2A550>
+           │    └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+           └ <proxypool.db.RedisClient object at 0x000001852FA9D430>
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\commands\core.py", line 4096, in zcard
+    return self.execute_command("ZCARD", name)
+           │    │                        └ 'proxies:universal'
+           │    └ <function Redis.execute_command at 0x00000185300DD790>
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\client.py", line 1255, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+           │    │             │    │              │               └ {}
+           │    │             │    │              └ 'ZCARD'
+           │    │             │    └ <function ConnectionPool.get_connection at 0x00000185300C7160>
+           │    │             └ ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>
+           │    └ None
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 1481, in get_connection
+    connection.connect()
+    │          └ <function Connection.connect at 0x00000185300C5160>
+    └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 721, in connect
+    raise ConnectionError(self._error_message(e))
+          │               │    └ <function Connection._error_message at 0x00000185300C5310>
+          │               └ Connection<host=127.0.0.1,port=6379,db=0>
+          └ <class 'redis.exceptions.ConnectionError'>
+
+redis.exceptions.ConnectionError: Error 10061 connecting to 127.0.0.1:6379. 由于目标计算机积极拒绝，无法连接。.
+2023-03-12 13:03:52.171 | ERROR    | __main__:<module>:4 - An error has been caught in function '<module>', process 'MainProcess' (12800), thread 'MainThread' (20240):
+Traceback (most recent call last):
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 715, in connect
+    sock = self.retry.call_with_retry(
+           │    │     └ <function Retry.call_with_retry at 0x0000028C694DDAF0>
+           │    └ <redis.retry.Retry object at 0x0000028C69BDE400>
+           └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\retry.py", line 46, in call_with_retry
+    return do()
+           └ <function Connection.connect.<locals>.<lambda> at 0x0000028C654CF3A0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 716, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+            │    │                         │    └ <function Connection.disconnect at 0x0000028C694E4430>
+            │    │                         └ Connection<host=127.0.0.1,port=6379,db=0>
+            │    └ <function Connection._connect at 0x0000028C694E41F0>
+            └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 781, in _connect
+    raise err
+          └ ConnectionRefusedError(10061, '由于目标计算机积极拒绝，无法连接。', None, 10061, None)
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 769, in _connect
+    sock.connect(socket_address)
+    │    │       └ ('127.0.0.1', 6379)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0>
+
+ConnectionRefusedError: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+> File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\代理池\ProxyPool\proxytest.py", line 4, in <module>
+    getter.run()
+    │      └ <function Getter.run at 0x0000028C69C06940>
+    └ <proxypool.getter.Getter object at 0x0000028C65C6B820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\代理池\ProxyPool\proxypool\getter.py", line 24, in run
+    if not self.is_full():
+           │    └ <function Getter.is_full at 0x0000028C69C06820>
+           └ <proxypool.getter.Getter object at 0x0000028C65C6B820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\代理池\ProxyPool\proxypool\getter.py", line 19, in is_full
+    return self.redis.count() >= PROXY_NUMBER_MAX
+           │    │     │          └ 50000
+           │    │     └ <function RedisClient.count at 0x0000028C69763280>
+           │    └ <proxypool.db.RedisClient object at 0x0000028C68EBC430>
+           └ <proxypool.getter.Getter object at 0x0000028C65C6B820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\代理池\ProxyPool\proxypool\db.py", line 72, in count
+    return self.db.zcard(REDIS_KEY)
+           │    │  │     └ 'proxies:universal'
+           │    │  └ <function SortedSetCommands.zcard at 0x0000028C69349550>
+           │    └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+           └ <proxypool.db.RedisClient object at 0x0000028C68EBC430>
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\commands\core.py", line 4096, in zcard
+    return self.execute_command("ZCARD", name)
+           │    │                        └ 'proxies:universal'
+           │    └ <function Redis.execute_command at 0x0000028C694FC790>
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\client.py", line 1255, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+           │    │             │    │              │               └ {}
+           │    │             │    │              └ 'ZCARD'
+           │    │             │    └ <function ConnectionPool.get_connection at 0x0000028C694E5160>
+           │    │             └ ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>
+           │    └ None
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 1481, in get_connection
+    connection.connect()
+    │          └ <function Connection.connect at 0x0000028C694E4160>
+    └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 721, in connect
+    raise ConnectionError(self._error_message(e))
+          │               │    └ <function Connection._error_message at 0x0000028C694E4310>
+          │               └ Connection<host=127.0.0.1,port=6379,db=0>
+          └ <class 'redis.exceptions.ConnectionError'>
+
+redis.exceptions.ConnectionError: Error 10061 connecting to 127.0.0.1:6379. 由于目标计算机积极拒绝，无法连接。.
+2023-03-12 13:09:16.078 | ERROR    | __main__:<module>:4 - An error has been caught in function '<module>', process 'MainProcess' (18816), thread 'MainThread' (19268):
+Traceback (most recent call last):
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 715, in connect
+    sock = self.retry.call_with_retry(
+           │    │     └ <function Retry.call_with_retry at 0x00000286A515DB80>
+           │    └ <redis.retry.Retry object at 0x00000286A585B7C0>
+           └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\retry.py", line 46, in call_with_retry
+    return do()
+           └ <function Connection.connect.<locals>.<lambda> at 0x00000286A14BF3A0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 716, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+            │    │                         │    └ <function Connection.disconnect at 0x00000286A51654C0>
+            │    │                         └ Connection<host=127.0.0.1,port=6379,db=0>
+            │    └ <function Connection._connect at 0x00000286A5165280>
+            └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 781, in _connect
+    raise err
+          └ ConnectionRefusedError(10061, '由于目标计算机积极拒绝，无法连接。', None, 10061, None)
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 769, in _connect
+    sock.connect(socket_address)
+    │    │       └ ('127.0.0.1', 6379)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0>
+
+ConnectionRefusedError: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+> File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxytest.py", line 4, in <module>
+    getter.run()
+    │      └ <function Getter.run at 0x00000286A58899D0>
+    └ <proxypool.getter.Getter object at 0x00000286A18EB820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\getter.py", line 24, in run
+    if not self.is_full():
+           │    └ <function Getter.is_full at 0x00000286A58898B0>
+           └ <proxypool.getter.Getter object at 0x00000286A18EB820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\getter.py", line 19, in is_full
+    return self.redis.count() >= PROXY_NUMBER_MAX
+           │    │     │          └ 50000
+           │    │     └ <function RedisClient.count at 0x00000286A53E5310>
+           │    └ <port.ProxyPool.proxypool.db.RedisClient object at 0x00000286A4B3D430>
+           └ <proxypool.getter.Getter object at 0x00000286A18EB820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\db.py", line 72, in count
+    return self.db.zcard(REDIS_KEY)
+           │    │  │     └ 'proxies:universal'
+           │    │  └ <function SortedSetCommands.zcard at 0x00000286A4FCC5E0>
+           │    └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+           └ <port.ProxyPool.proxypool.db.RedisClient object at 0x00000286A4B3D430>
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\commands\core.py", line 4096, in zcard
+    return self.execute_command("ZCARD", name)
+           │    │                        └ 'proxies:universal'
+           │    └ <function Redis.execute_command at 0x00000286A517F820>
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\client.py", line 1255, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+           │    │             │    │              │               └ {}
+           │    │             │    │              └ 'ZCARD'
+           │    │             │    └ <function ConnectionPool.get_connection at 0x00000286A51681F0>
+           │    │             └ ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>
+           │    └ None
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 1481, in get_connection
+    connection.connect()
+    │          └ <function Connection.connect at 0x00000286A51651F0>
+    └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 721, in connect
+    raise ConnectionError(self._error_message(e))
+          │               │    └ <function Connection._error_message at 0x00000286A51653A0>
+          │               └ Connection<host=127.0.0.1,port=6379,db=0>
+          └ <class 'redis.exceptions.ConnectionError'>
+
+redis.exceptions.ConnectionError: Error 10061 connecting to 127.0.0.1:6379. 由于目标计算机积极拒绝，无法连接。.
+2023-03-12 13:56:09.009 | ERROR    | proxypool.scheduler:run_getter:43 - An error has been caught in function 'run_getter', process 'Process-2' (12896), thread 'MainThread' (20848):
+Traceback (most recent call last):
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 715, in connect
+    sock = self.retry.call_with_retry(
+           │    │     └ <function Retry.call_with_retry at 0x0000022FE9844280>
+           │    └ <redis.retry.Retry object at 0x0000022FE9A84F10>
+           └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\retry.py", line 46, in call_with_retry
+    return do()
+           └ <function Connection.connect.<locals>.<lambda> at 0x0000022FE8EB5310>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 716, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+            │    │                         │    └ <function Connection.disconnect at 0x0000022FE9848B80>
+            │    │                         └ Connection<host=127.0.0.1,port=6379,db=0>
+            │    └ <function Connection._connect at 0x0000022FE9848940>
+            └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 781, in _connect
+    raise err
+          └ ConnectionRefusedError(10061, '由于目标计算机积极拒绝，无法连接。', None, 10061, None)
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 769, in _connect
+    sock.connect(socket_address)
+    │    │       └ ('127.0.0.1', 6379)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0>
+
+ConnectionRefusedError: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "<string>", line 1, in <module>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\spawn.py", line 116, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+               │     │   └ 304
+               │     └ 3
+               └ <function _main at 0x0000022FE8EB3E50>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\spawn.py", line 129, in _main
+    return self._bootstrap(parent_sentinel)
+           │    │          └ 304
+           │    └ <function BaseProcess._bootstrap at 0x0000022FE8E93A60>
+           └ <Process name='Process-2' parent=17580 started>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\process.py", line 315, in _bootstrap
+    self.run()
+    │    └ <function BaseProcess.run at 0x0000022FE8E930D0>
+    └ <Process name='Process-2' parent=17580 started>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Process name='Process-2' parent=17580 started>
+    │    │        │    └ ()
+    │    │        └ <Process name='Process-2' parent=17580 started>
+    │    └ <bound method Scheduler.run_getter of <proxypool.scheduler.Scheduler object at 0x0000022FE8EA9F40>>
+    └ <Process name='Process-2' parent=17580 started>
+
+> File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\scheduler.py", line 43, in run_getter
+    getter.run()
+    │      └ <function Getter.run at 0x0000022FE9EAF700>
+    └ <port.ProxyPool.proxypool.getter.Getter object at 0x0000022FE8E8A970>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\getter.py", line 24, in run
+    if not self.is_full():
+           │    └ <function Getter.is_full at 0x0000022FE9EAF5E0>
+           └ <port.ProxyPool.proxypool.getter.Getter object at 0x0000022FE8E8A970>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\getter.py", line 19, in is_full
+    return self.redis.count() >= PROXY_NUMBER_MAX
+           │    │     │          └ 50000
+           │    │     └ <function RedisClient.count at 0x0000022FE9A839D0>
+           │    └ <port.ProxyPool.proxypool.db.RedisClient object at 0x0000022FE8EA9B50>
+           └ <port.ProxyPool.proxypool.getter.Getter object at 0x0000022FE8E8A970>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\db.py", line 72, in count
+    return self.db.zcard(REDIS_KEY)
+           │    │  │     └ 'proxies:universal'
+           │    │  └ <function SortedSetCommands.zcard at 0x0000022FE9801CA0>
+           │    └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+           └ <port.ProxyPool.proxypool.db.RedisClient object at 0x0000022FE8EA9B50>
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\commands\core.py", line 4096, in zcard
+    return self.execute_command("ZCARD", name)
+           │    │                        └ 'proxies:universal'
+           │    └ <function Redis.execute_command at 0x0000022FE9855280>
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\client.py", line 1255, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+           │    │             │    │              │               └ {}
+           │    │             │    │              └ 'ZCARD'
+           │    │             │    └ <function ConnectionPool.get_connection at 0x0000022FE98498B0>
+           │    │             └ ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>
+           │    └ None
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 1481, in get_connection
+    connection.connect()
+    │          └ <function Connection.connect at 0x0000022FE98488B0>
+    └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 721, in connect
+    raise ConnectionError(self._error_message(e))
+          │               │    └ <function Connection._error_message at 0x0000022FE9848A60>
+          │               └ Connection<host=127.0.0.1,port=6379,db=0>
+          └ <class 'redis.exceptions.ConnectionError'>
+
+redis.exceptions.ConnectionError: Error 10061 connecting to 127.0.0.1:6379. 由于目标计算机积极拒绝，无法连接。.
+2023-03-12 13:56:24.489 | ERROR    | __main__:<module>:4 - An error has been caught in function '<module>', process 'MainProcess' (14436), thread 'MainThread' (19884):
+Traceback (most recent call last):
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 715, in connect
+    sock = self.retry.call_with_retry(
+           │    │     └ <function Retry.call_with_retry at 0x0000014E7A44EB80>
+           │    └ <redis.retry.Retry object at 0x0000014E7AB4D790>
+           └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\retry.py", line 46, in call_with_retry
+    return do()
+           └ <function Connection.connect.<locals>.<lambda> at 0x0000014E7643F3A0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 716, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+            │    │                         │    └ <function Connection.disconnect at 0x0000014E7A4564C0>
+            │    │                         └ Connection<host=127.0.0.1,port=6379,db=0>
+            │    └ <function Connection._connect at 0x0000014E7A456280>
+            └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 781, in _connect
+    raise err
+          └ ConnectionRefusedError(10061, '由于目标计算机积极拒绝，无法连接。', None, 10061, None)
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 769, in _connect
+    sock.connect(socket_address)
+    │    │       └ ('127.0.0.1', 6379)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0>
+
+ConnectionRefusedError: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+> File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxytest.py", line 4, in <module>
+    getter.run()
+    │      └ <function Getter.run at 0x0000014E7AB799D0>
+    └ <proxypool.getter.Getter object at 0x0000014E76BDB820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\getter.py", line 24, in run
+    if not self.is_full():
+           │    └ <function Getter.is_full at 0x0000014E7AB798B0>
+           └ <proxypool.getter.Getter object at 0x0000014E76BDB820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\getter.py", line 19, in is_full
+    return self.redis.count() >= PROXY_NUMBER_MAX
+           │    │     │          └ 50000
+           │    │     └ <function RedisClient.count at 0x0000014E7A6D5310>
+           │    └ <port.ProxyPool.proxypool.db.RedisClient object at 0x0000014E79E1D430>
+           └ <proxypool.getter.Getter object at 0x0000014E76BDB820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\db.py", line 72, in count
+    return self.db.zcard(REDIS_KEY)
+           │    │  │     └ 'proxies:universal'
+           │    │  └ <function SortedSetCommands.zcard at 0x0000014E7A2AC5E0>
+           │    └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+           └ <port.ProxyPool.proxypool.db.RedisClient object at 0x0000014E79E1D430>
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\commands\core.py", line 4096, in zcard
+    return self.execute_command("ZCARD", name)
+           │    │                        └ 'proxies:universal'
+           │    └ <function Redis.execute_command at 0x0000014E7A46E820>
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\client.py", line 1255, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+           │    │             │    │              │               └ {}
+           │    │             │    │              └ 'ZCARD'
+           │    │             │    └ <function ConnectionPool.get_connection at 0x0000014E7A4581F0>
+           │    │             └ ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>
+           │    └ None
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 1481, in get_connection
+    connection.connect()
+    │          └ <function Connection.connect at 0x0000014E7A4561F0>
+    └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 721, in connect
+    raise ConnectionError(self._error_message(e))
+          │               │    └ <function Connection._error_message at 0x0000014E7A4563A0>
+          │               └ Connection<host=127.0.0.1,port=6379,db=0>
+          └ <class 'redis.exceptions.ConnectionError'>
+
+redis.exceptions.ConnectionError: Error 10061 connecting to 127.0.0.1:6379. 由于目标计算机积极拒绝，无法连接。.
+2023-03-12 14:47:41.636 | ERROR    | proxypool.scheduler:run_getter:43 - An error has been caught in function 'run_getter', process 'Process-2' (3360), thread 'MainThread' (21168):
+Traceback (most recent call last):
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 715, in connect
+    sock = self.retry.call_with_retry(
+           │    │     └ <function Retry.call_with_retry at 0x000001FE14664280>
+           │    └ <redis.retry.Retry object at 0x000001FE148A5E20>
+           └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\retry.py", line 46, in call_with_retry
+    return do()
+           └ <function Connection.connect.<locals>.<lambda> at 0x000001FE13CD5310>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 716, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+            │    │                         │    └ <function Connection.disconnect at 0x000001FE14668B80>
+            │    │                         └ Connection<host=127.0.0.1,port=6379,db=0>
+            │    └ <function Connection._connect at 0x000001FE14668940>
+            └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 781, in _connect
+    raise err
+          └ ConnectionRefusedError(10061, '由于目标计算机积极拒绝，无法连接。', None, 10061, None)
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 769, in _connect
+    sock.connect(socket_address)
+    │    │       └ ('127.0.0.1', 6379)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0>
+
+ConnectionRefusedError: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "<string>", line 1, in <module>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\spawn.py", line 116, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+               │     │   └ 308
+               │     └ 3
+               └ <function _main at 0x000001FE13CD4E50>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\spawn.py", line 129, in _main
+    return self._bootstrap(parent_sentinel)
+           │    │          └ 308
+           │    └ <function BaseProcess._bootstrap at 0x000001FE13CB3A60>
+           └ <Process name='Process-2' parent=22244 started>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\process.py", line 315, in _bootstrap
+    self.run()
+    │    └ <function BaseProcess.run at 0x000001FE13CB30D0>
+    └ <Process name='Process-2' parent=22244 started>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Process name='Process-2' parent=22244 started>
+    │    │        │    └ ()
+    │    │        └ <Process name='Process-2' parent=22244 started>
+    │    └ <bound method Scheduler.run_getter of <proxypool.scheduler.Scheduler object at 0x000001FE13CC9F40>>
+    └ <Process name='Process-2' parent=22244 started>
+
+> File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\scheduler.py", line 43, in run_getter
+    getter.run()
+    │      └ <function Getter.run at 0x000001FE14CCE700>
+    └ <port.ProxyPool.proxypool.getter.Getter object at 0x000001FE13CAA970>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\getter.py", line 24, in run
+    if not self.is_full():
+           │    └ <function Getter.is_full at 0x000001FE14CCE5E0>
+           └ <port.ProxyPool.proxypool.getter.Getter object at 0x000001FE13CAA970>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\getter.py", line 19, in is_full
+    return self.redis.count() >= PROXY_NUMBER_MAX
+           │    │     │          └ 50000
+           │    │     └ <function RedisClient.count at 0x000001FE148A39D0>
+           │    └ <port.ProxyPool.proxypool.db.RedisClient object at 0x000001FE13CC9B50>
+           └ <port.ProxyPool.proxypool.getter.Getter object at 0x000001FE13CAA970>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\db.py", line 72, in count
+    return self.db.zcard(REDIS_KEY)
+           │    │  │     └ 'proxies:universal'
+           │    │  └ <function SortedSetCommands.zcard at 0x000001FE14621CA0>
+           │    └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+           └ <port.ProxyPool.proxypool.db.RedisClient object at 0x000001FE13CC9B50>
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\commands\core.py", line 4096, in zcard
+    return self.execute_command("ZCARD", name)
+           │    │                        └ 'proxies:universal'
+           │    └ <function Redis.execute_command at 0x000001FE14676280>
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\client.py", line 1255, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+           │    │             │    │              │               └ {}
+           │    │             │    │              └ 'ZCARD'
+           │    │             │    └ <function ConnectionPool.get_connection at 0x000001FE146698B0>
+           │    │             └ ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>
+           │    └ None
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 1481, in get_connection
+    connection.connect()
+    │          └ <function Connection.connect at 0x000001FE146688B0>
+    └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 721, in connect
+    raise ConnectionError(self._error_message(e))
+          │               │    └ <function Connection._error_message at 0x000001FE14668A60>
+          │               └ Connection<host=127.0.0.1,port=6379,db=0>
+          └ <class 'redis.exceptions.ConnectionError'>
+
+redis.exceptions.ConnectionError: Error 10061 connecting to 127.0.0.1:6379. 由于目标计算机积极拒绝，无法连接。.
+2023-03-13 13:41:35.700 | ERROR    | __main__:<module>:4 - An error has been caught in function '<module>', process 'MainProcess' (5996), thread 'MainThread' (10408):
+Traceback (most recent call last):
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 715, in connect
+    sock = self.retry.call_with_retry(
+           │    │     └ <function Retry.call_with_retry at 0x000001E06823FB80>
+           │    └ <redis.retry.Retry object at 0x000001E06893E760>
+           └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\retry.py", line 46, in call_with_retry
+    return do()
+           └ <function Connection.connect.<locals>.<lambda> at 0x000001E06427F3A0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 716, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+            │    │                         │    └ <function Connection.disconnect at 0x000001E0682474C0>
+            │    │                         └ Connection<host=127.0.0.1,port=6379,db=0>
+            │    └ <function Connection._connect at 0x000001E068247280>
+            └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 781, in _connect
+    raise err
+          └ ConnectionRefusedError(10061, '由于目标计算机积极拒绝，无法连接。', None, 10061, None)
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 769, in _connect
+    sock.connect(socket_address)
+    │    │       └ ('127.0.0.1', 6379)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0>
+
+ConnectionRefusedError: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+> File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxytest.py", line 4, in <module>
+    getter.run()
+    │      └ <function Getter.run at 0x000001E0689699D0>
+    └ <proxypool.getter.Getter object at 0x000001E0646AB820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\getter.py", line 24, in run
+    if not self.is_full():
+           │    └ <function Getter.is_full at 0x000001E0689698B0>
+           └ <proxypool.getter.Getter object at 0x000001E0646AB820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\getter.py", line 19, in is_full
+    return self.redis.count() >= PROXY_NUMBER_MAX
+           │    │     │          └ 50000
+           │    │     └ <function RedisClient.count at 0x000001E0684C6310>
+           │    └ <port.ProxyPool.proxypool.db.RedisClient object at 0x000001E06791D430>
+           └ <proxypool.getter.Getter object at 0x000001E0646AB820>
+
+  File "C:\Users\沃丝尼达耶星星\PycharmProjects\rentpay\port\ProxyPool\proxypool\db.py", line 72, in count
+    return self.db.zcard(REDIS_KEY)
+           │    │  │     └ 'proxies:universal'
+           │    │  └ <function SortedSetCommands.zcard at 0x000001E0680AC5E0>
+           │    └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+           └ <port.ProxyPool.proxypool.db.RedisClient object at 0x000001E06791D430>
+
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\commands\core.py", line 4096, in zcard
+    return self.execute_command("ZCARD", name)
+           │    │                        └ 'proxies:universal'
+           │    └ <function Redis.execute_command at 0x000001E06825F820>
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\client.py", line 1255, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+           │    │             │    │              │               └ {}
+           │    │             │    │              └ 'ZCARD'
+           │    │             │    └ <function ConnectionPool.get_connection at 0x000001E0682491F0>
+           │    │             └ ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>
+           │    └ None
+           └ Redis<ConnectionPool<Connection<host=127.0.0.1,port=6379,db=0>>>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 1481, in get_connection
+    connection.connect()
+    │          └ <function Connection.connect at 0x000001E0682471F0>
+    └ Connection<host=127.0.0.1,port=6379,db=0>
+  File "C:\Users\沃丝尼达耶星星\AppData\Roaming\Python\Python39\site-packages\redis\connection.py", line 721, in connect
+    raise ConnectionError(self._error_message(e))
+          │               │    └ <function Connection._error_message at 0x000001E0682473A0>
+          │               └ Connection<host=127.0.0.1,port=6379,db=0>
+          └ <class 'redis.exceptions.ConnectionError'>
+
+redis.exceptions.ConnectionError: Error 10061 connecting to 127.0.0.1:6379. 由于目标计算机积极拒绝，无法连接。.

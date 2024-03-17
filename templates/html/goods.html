@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>商品管理列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="stylesheet" href="../../static/css/font.css">
+    <link rel="stylesheet" href="../../static/css/xadmin.css">
+    <script src="../../static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../static/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../static/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../static/js/goods.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">系统管理</a>
+        <a>
+          <cite>商品数据</cite></a>
+      </span>
+    <a class="layui-btn layui-btn-primary layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:38px">ဂ</i></a>
+</div>
+<div class="x-body">
+    <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so">
+            <input class="layui-input" placeholder="商品标题" name="title_s" id="title_s" type="text">
+            <input class="layui-input" placeholder="商品类别" name="category_s" id="category_s" type="text">
+            <input class="layui-input" placeholder="商品子类别" name="subkeycat_s" id="subkeycat_s" type="text">
+            <input class="layui-input" placeholder="店铺名称" name="shop_s" id="shop_s" type="text">
+            <span class="layui-btn" onclick="get_search()"><i class="layui-icon">&#xe615;</i></span>
+        </form>
+    </div>
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th>编号</th>
+            <th>标题</th>
+            <th>类别</th>
+            <th>子类别</th>
+            <th>折扣价</th>
+            <th>原价</th>
+            <th>店铺</th>
+            <th>销量</th>
+            <th>月份</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody id="goods_data">
+
+        </tbody>
+    </table>
+    <div class="page">
+        <div id="page_list">
+
+        </div>
+    </div>
+
+</div>
+</body>
+<style>
+    .layui-form-label {
+        width: 150px !important;
+    }
+</style>
+<div class="x-body" id="goods-form" style="display: none">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label for="category" class="layui-form-label">
+                <span class="x-red">*</span>月份
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="monthly" name="monthly" disabled
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="title" class="layui-form-label">
+                <span class="x-red">*</span>标题
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="title" name="title" required lay-verify="required"
+                       autocomplete="off" class="layui-input">
+                <input type="hidden" disabled id="id" name="id">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="category" class="layui-form-label">
+                <span class="x-red">*</span>类别
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="category" name="category" required lay-verify="required"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="subkeycat" class="layui-form-label">
+                <span class="x-red">*</span>子类别
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="subkeycat" name="subkeycat" required lay-verify="required"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="discount" class="layui-form-label">
+                <span class="x-red">*</span>折扣价
+            </label>
+            <div class="layui-input-inline">
+                <input type="number" id="discount" name="discount" required lay-verify="required|number"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="original_price" class="layui-form-label">
+                <span class="x-red">*</span>原价
+            </label>
+            <div class="layui-input-inline">
+                <input type="number" id="original_price" name="original_price" required lay-verify="required|number"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="shop" class="layui-form-label">
+                <span class="x-red">*</span>店铺
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="shop" name="shop" required lay-verify="required"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="monthly_sales" class="layui-form-label">
+                <span class="x-red">*</span>销量
+            </label>
+            <div class="layui-input-inline">
+                <input type="number" id="monthly_sales" name="monthly_sales" required lay-verify="required|number"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label for="L_repass" class="layui-form-label">
+            </label>
+            <button id="L_repass" class="layui-btn" lay-filter="edit" lay-submit="">
+                提交
+            </button>
+        </div>
+    </form>
+</div>
+</html>

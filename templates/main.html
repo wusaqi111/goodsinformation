@@ -1,0 +1,2710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    {#    <link rel="icon" href="../static/images/windows-icon@2x.ico" />#}
+
+    <title>电商信息 | 可视化分析</title>
+
+    <!-- 轮播swiper插件样式 -->
+    <link rel="stylesheet" href="../static/js/swiper/swiper.min.css"/>
+    <!-- 翻牌器 -->
+    <link rel="stylesheet" href="../static/js/cubeflop/cubeflop.css"/>
+
+    <!-- 补间动画包 -->
+    <link rel="stylesheet" href="../static/css/custom-animation.css"/>
+
+    <!-- 重置样式 -->
+    <link rel="stylesheet" href="../static/css/reset.css"/>
+
+    <!-- 当前页面样式文件 -->
+    <link rel="stylesheet" href="../static/style.css"/>
+
+    <link rel="stylesheet" href="../../static/css/xadmin2.css">
+
+    <!-- jquery -->
+    <script src="../static/js/jquery.min.js"></script>
+    <!-- echarts -->
+    <script src="../static/js/echarts/echarts.min.js"></script>
+    <!-- echarts 水球图 -->
+    <script src="../static/js/echarts/echarts-liquidfill.min.js"></script>
+    <!-- echarts 词云 -->
+    <script src="../static/js/echarts/echarts-wordcloud.min.js"></script>
+    <!-- javascript工具库 -->
+    <script src="../static/js/lodash.min.js"></script>
+    <!-- 二维码插件 -->
+    <script src="../static/js/qrcode.min.js"></script>
+    <!-- 轮播插件 -->
+    <script src="../static/js/swiper/swiper.min.js"></script>
+    <!-- 表格滚动插件 -->
+    <script src="../static/js/seamscroll.min.js"></script>
+    <!-- day 日期插件 -->
+    <script src="../static/js/dayjs/dayjs.min.js"></script>
+    <script src="../static/js/dayjs/zh-cn.js"></script>
+    <!-- 工具类 -->
+    <script src="../static/js/utils.js"></script>
+    <!-- 滚动数字所需要的插件 -->
+    <script src="../static/js/jquery.countTo.js"></script>
+    <!-- 翻牌器 -->
+    <script src="../static/js/cubeflop/cubeflop.js"></script>
+      <link rel="shortcut icon" href="../static/images/bl.png" type="image/x-icon"/>
+    <script type="text/javascript" src="../../static/lib/layui/layui.js" charset="utf-8"></script>
+</head>
+
+<body>
+
+<form class="layui-form" action="" style="height: 50px;display: inline-block">
+    <div class="layui-input-inline">
+        <select  title="选择类别" name="modules" lay-verify="required" lay-search="" lay-filter="all" id="test">
+            <option value="">全部</option>
+        </select>
+    </div>
+<!--    <input type="button"  id="btn" value="添加" />-->
+</form>
+<form class="layui-form" action="" style="height: 50px;display: inline-block">
+    <div class="layui-input-inline">
+        <select name="modules" lay-verify="required" lay-search="" lay-filter="test" id="test2">
+            <option value="">请选择</option>
+        </select>
+    </div>
+</form>
+<button class="layui-btn" id="clickBtn"><i class="layui-icon"></i>总体信息查询</button>
+
+
+<script type="text/javascript">
+
+    window.onload = function(){
+        layui.use(['form'], function(){
+            var form = layui.form,
+                $ = layui.jquery;
+                $(function () {
+                $.ajax({
+                    url: "/main/data",
+                    method: "GET",
+                    success: function (obj) {
+                        for (let key in obj["data"]) {
+                            $('#test').append(new Option(key, key));
+                            // for(let value in obj["data"][key]){
+                            // for(let value in obj["data"][key]){
+                            //     $('#test2').append(new Option(obj["data"][key][value],obj["data"][key][value]));
+                            // }
+                        }
+                        form.on('select(all)',
+                            function(data){
+                                $('#test2').empty();
+                                $('#test2').append(new Option('全部',''));
+                                var val=data.value;
+                                // selectt=val
+                                console.info(val);
+                                for (let value in obj["data"][val]) {
+                                    // console.log(obj["data"][val][value])
+                                    $('#test2').append(new Option(obj["data"][val][value],obj["data"][val][value]));
+                                }
+                                // if($("#test2").get(0).selectedIndex===-1){
+                                //
+                                // }
+                                // console.log('条件', $("#test2").get(0).selectedIndex)
+                                // if($('#test2').isEmpty()){
+                                //     $('#test2').append(new Option('全部',''))
+                                // }
+                                form.render('select');
+                            });
+
+                            }})
+
+                    })
+
+        });
+
+
+
+        var index
+        var index2
+        var value
+        var value2
+        var clickBtn = document.getElementById("clickBtn");
+        clickBtn.addEventListener("click",function(){
+            index = document.getElementById("test").selectedIndex
+            index2 = document.getElementById("test2").selectedIndex
+            value= document.getElementById("test").options[index].value
+            value2= document.getElementById("test2").options[index2].value
+
+            $.ajax({
+                url: "/data/total",
+                method: "POST",
+                data:{"c":value,"s":value2},
+                dataType: 'json',
+                success: function (obj) {
+                    $("#main").html(obj.data)
+                    let data_1 = obj.shop
+                    let data_2 = obj.category
+                    let data_3 = obj.goods
+
+                    $("#item-total-1 .countto").countTo({
+                        from: 0,
+                        to: data_1,
+                        speed: 3000,
+                        decimals: 0,
+                        formatter: (value, options) => {
+                            return (
+                                "总店铺：" +
+                                value
+                                    .toFixed(options.decimals)
+                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            )
+                        },
+                    })
+
+                    $("#item-total-2 .countto").countTo({
+                        from: 0,
+                        to: data_2,
+                        speed: 3000,
+                        decimals: 0,
+                        formatter: (value, options) => {
+                            return (
+                                "总类别：" +
+                                value
+                                    .toFixed(options.decimals)
+                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            )
+                        },
+                    })
+
+                    $("#item-total-3 .countto").countTo({
+                        from: 0,
+                        to: data_3,
+                        speed: 3000,
+                        decimals: 0,
+                        formatter: (value, options) => {
+                            return (
+                                "总数据：" +
+                                value
+                                    .toFixed(options.decimals)
+                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            )
+                        },
+                    })
+                }})
+
+
+            $.ajax({
+                url: "/data/sales/top",
+                method: "POST",
+                data:{"c":value,"s":value2},
+                dataType: 'json',
+                success: function (obj) {
+                    $("#main").html(obj.data)
+                    // 基于准备好的dom，初始化echarts实例
+                    const myChart = echarts.init(
+                        document.getElementById("item-goods-top-table")
+                    )
+                    // 指定图表的配置项
+                    let option = {
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        grid: {
+                            top: 15,
+                            left: 15,
+                            right: 15,
+                            bottom: 15,
+                            containLabel: true,
+                        },
+                        legend: {
+                            show: false,
+                            top: "top",
+                            left: "center",
+                            orient: "horizontal",
+                            itemWidth: 8,
+                            itemHeight: 8,
+                            itemGap: 10,
+                            icon: "rect",
+                            textStyle: {color: "#ffffff", fontSize: 12, lineHeight: 14},
+                        },
+                        xAxis: {
+                            show: false,
+                            axisLabel: {
+                                show: false,
+                                color: "#ffffff",
+                                fontSize: 12,
+                                margin: 8,
+                                height: "14px",
+                            },
+                            axisLine: {
+                                show: true,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            axisTick: {
+                                show: false,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            splitLine: {
+                                show: false,
+                                lineStyle: {color: "#27292d", type: "dashed", width: 1},
+                            },
+                            data: [],
+                            type: "value",
+                        },
+                        yAxis: [
+                            {
+                                type: "category",
+                                show: true,
+                                inverse: true,
+                                axisLabel: {
+                                    show: true,
+                                    color: "#ffffff",
+                                    fontSize: 18,
+                                    margin: 20,
+                                    verticalAlign: "middle",
+                                },
+                                axisLine: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "solid", width: 1},
+                                },
+                                axisTick: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "solid", width: 1},
+                                },
+                                splitLine: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "dashed", width: 1},
+                                },
+                                data: [],
+                            },
+                            {
+                                type: "category",
+                                show: true,
+                                inverse: true,
+                                axisLabel: {
+                                    show: true,
+                                    color: "#ffffff",
+                                    fontSize: 18,
+                                    margin: 20,
+                                },
+                                axisLine: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "solid", width: 1},
+                                },
+                                axisTick: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "solid", width: 1},
+                                },
+                                splitLine: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "dashed", width: 1},
+                                },
+                                data: [],
+                                position: "right",
+                            },
+                        ],
+                        color: [
+                            {
+                                type: "linear",
+                                x: 0,
+                                y: 0,
+                                x2: 1,
+                                y2: 0,
+                                colorStops: [
+                                    {offset: 0, color: "#399efe"},
+                                    {offset: 0.82, color: "#06f6f0"},
+                                ],
+                            },
+                            "#FFFFFF",
+                        ],
+                        series: [
+                            {
+                                name: "",
+                                type: "pictorialBar",
+                                useSeriesStyle: false,
+                                symbol:
+                                    "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAKJSURBVHgBvZfPbxJBFMe/M7tAaUospQFLNHrqwWuTxnAw/AH2aI8aD9YY/V+8aJqgidFjPcrRg/FgtAlXD71oYsQWiqXSUAu7M74HAUkF9kEWP5tlwu5jvvPmx3sPBQG3dqxTrSJugCSiWPAsYlrB4XfGwtdAU7dxGnXx6+19dSzpUwUJ7h8h7StkekJB+AYtFzisJVH7vKlaEwvnXtk0fiMrFRw2AL+N8u4jVRML55/ZSx6QQQjoFirvH6pvgcK55/aKtlhGiHgeah8fqK+Dz/TgF/Y0bFHGdZG68dReHiq8/sSmwpreYZgo0rlt2jeDwtd2bNSJIItZ4yDLJ6UvnDpDytF0QmcMnxA+nn1hrxn+uo6CYwJ77eYf20VvMm/XlMIWtat0J+guWYsitW8kP2avy18w72KBLiE0PVu2K3p+IHyvGIOCpJ/IEi5oirvzEmNSvTlEtA95ze/WIIBifkLTh0hYWWwE2owZ2CCdJDNBLJZ4syqw6ayzhpyGwCYBIZrzqdB2T2BTEth0c7ircCYxps1TENgUIaBTOGjZFDKlceK04/md6CyTs023rXGsjDg5FEigTPYblFB5szVgsWfpObWiae4q48TNJtD8Xqc5l+5ugyIJFUloKgwt7bu7qq5fbyrfieMA/wl1ip/cdo7TxRgqE+zuqWFvjzI47Auz15hDGTPGi+BHr/LsB5APt1WFCzPMCO57987fivOfYu/6tr3KNRJCJLDYY9ggTM+5r/OizMiCfv2lTbltrFDVGcNUivDaBvuf7qmhJ2bsXxguApMNLFPEWhIPQHPWQ5Xiw0Fn045AQUj+hV00TSRMBHEKNXEKJG5PiJJ6i64Tfw51DkjjBHv8AQoV7J+kqVTIAAAAAElFTkSuQmCC",
+                                symbolSize: [40, 40],
+                                symbolOffset: [20, 0],
+                                z: 2,
+                                data: [],
+                            },
+                        ],
+                    }
+                    let seriesStyle = {
+                        showBackground: true,
+                        backgroundStyle: {color: "rgba(241, 248, 255, 0.1)", opacity: 1},
+                        itemStyle: {
+                            shadowBlur: 0,
+                            shadowColor: "#5c1717",
+                            shadowOffsetX: 0,
+                            shadowOffsetY: 0,
+                            borderRadius: 0,
+                            borderColor: "#292929",
+                            borderWidth: 0,
+                            borderType: "dotted",
+                        },
+                        label: {
+                            show: false,
+                            position: "right",
+                            color: "#fff",
+                            fontSize: 12,
+                        },
+                        barWidth: 10,
+                        z: 1,
+                    }
+
+                    // 指定图表的数据
+                    let data = obj.data
+
+                    //数据处理 开始
+                    let xKey = "value"
+                    let yKey = "time"
+                    let sKey = "name"
+                    let dataSeries = deepCopy(option.series)
+                    let seriesArr = []
+                    let dataColumn = []
+                    const colorList = option.color
+                    data.forEach((item) => seriesArr.push(item[sKey]))
+                    seriesArr = [...new Set(seriesArr)]
+                    if (xKey && xKey) {
+                        data.forEach((item) => dataColumn.push(item[yKey]))
+                        dataColumn = [...new Set(dataColumn)]
+                        seriesArr.forEach((item) => {
+                            let data1 = []
+                            data.forEach((oitem) => {
+                                if (oitem[sKey] === item) {
+                                    data1.push({
+                                        name: oitem[yKey],
+                                        value: oitem[xKey],
+                                    })
+                                }
+                            })
+                            dataSeries.unshift({
+                                name: item,
+                                data: data1,
+                                type: "bar",
+                            })
+                        })
+                    }
+                    let seriesObj = dataSeries.map((item) => {
+                        if (item.useSeriesStyle != false) {
+                            return (item = _.merge(item, seriesStyle, {
+                                itemStyle: {
+                                    color: (params) => {
+                                        if (params.dataIndex < 3) {
+                                            return colorList[0]
+                                        } else {
+                                            return colorList[1]
+                                        }
+                                    },
+                                },
+                            }))
+                        } else {
+                            return (item = item)
+                        }
+                    })
+                    let arr1 = [],
+                        arr2 = []
+                    seriesObj[0].data.sort((a, b) => {
+                        return b.value - a.value
+                    })
+                    seriesObj[0].data.forEach((item) => {
+                        arr1.push(item.name)
+                        arr2.push(item.value)
+                    })
+                    option.yAxis[0].data = arr1
+                    option.yAxis[1].data = arr2
+                    option.yAxis[0].axisLabel.formatter = function (value, index) {
+                        return `No.${index + 1} ${value}`
+                    }
+                    if (seriesObj.length) {
+                        let dataArr = seriesObj[0].data
+                        let maxNumber = dataArr[0].value
+                        let arr = []
+                        dataArr.forEach((item) => {
+                            arr.push({
+                                value: item.value,
+                                symbolPosition: "end",
+                            })
+                        })
+                        seriesObj[1].data = arr
+                    }
+                    // 数据处理完
+                    option.series = seriesObj
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option)
+                }
+            })
+            $.ajax({
+                url: "/data/shop/top",
+                method: "POST",
+                data:{"c":value,"s":value2},
+                dataType: 'json',
+                success: function (obj) {
+                    $("#main").html(obj.data)
+                    const myChart = echarts.init(
+                        document.getElementById("iteme-shop-top-table")
+                    )
+                    // 指定图表的配置项
+                    let option = {
+                        grid: {
+                            top: 15,
+                            left: 15,
+                            right: 15,
+                            bottom: 15,
+                            containLabel: true,
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            show: false,
+                            top: "top",
+                            left: "center",
+                            orient: "horizontal",
+                            itemWidth: 8,
+                            itemHeight: 8,
+                            itemGap: 10,
+                            icon: "rect",
+                            textStyle: {color: "#ffffff", fontSize: 12, lineHeight: 14},
+                        },
+                        xAxis: {
+                            show: false,
+                            axisLabel: {
+                                show: false,
+                                color: "#ffffff",
+                                fontSize: 12,
+                                margin: 8,
+                                height: "14px",
+                            },
+                            axisLine: {
+                                show: true,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            axisTick: {
+                                show: false,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            splitLine: {
+                                show: false,
+                                lineStyle: {color: "#27292d", type: "dashed", width: 1},
+                            },
+                            data: [],
+                            type: "value",
+                        },
+                        yAxis: [
+                            {
+                                type: "category",
+                                show: true,
+                                inverse: true,
+                                axisLabel: {
+                                    show: true,
+                                    color: "#ffffff",
+                                    fontSize: 18,
+                                    margin: 20,
+                                    verticalAlign: "middle",
+                                },
+                                axisLine: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "solid", width: 1},
+                                },
+                                axisTick: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "solid", width: 1},
+                                },
+                                splitLine: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "dashed", width: 1},
+                                },
+                                data: [],
+                            },
+                            {
+                                type: "category",
+                                show: true,
+                                inverse: true,
+                                axisLabel: {
+                                    show: true,
+                                    color: "#ffffff",
+                                    fontSize: 18,
+                                    margin: 20,
+                                },
+                                axisLine: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "solid", width: 1},
+                                },
+                                axisTick: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "solid", width: 1},
+                                },
+                                splitLine: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "dashed", width: 1},
+                                },
+                                data: [],
+                                position: "right",
+                            },
+                        ],
+                        color: [
+                            {
+                                type: "linear",
+                                x: 0,
+                                y: 0,
+                                x2: 1,
+                                y2: 0,
+                                colorStops: [
+                                    {offset: 0, color: "#399efe"},
+                                    {offset: 0.82, color: "#06f6f0"},
+                                ],
+                            },
+                            "#FFFFFF",
+                        ],
+                        series: [
+                            {
+                                name: "",
+                                type: "pictorialBar",
+                                useSeriesStyle: false,
+                                symbol:
+                                    "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAKJSURBVHgBvZfPbxJBFMe/M7tAaUospQFLNHrqwWuTxnAw/AH2aI8aD9YY/V+8aJqgidFjPcrRg/FgtAlXD71oYsQWiqXSUAu7M74HAUkF9kEWP5tlwu5jvvPmx3sPBQG3dqxTrSJugCSiWPAsYlrB4XfGwtdAU7dxGnXx6+19dSzpUwUJ7h8h7StkekJB+AYtFzisJVH7vKlaEwvnXtk0fiMrFRw2AL+N8u4jVRML55/ZSx6QQQjoFirvH6pvgcK55/aKtlhGiHgeah8fqK+Dz/TgF/Y0bFHGdZG68dReHiq8/sSmwpreYZgo0rlt2jeDwtd2bNSJIItZ4yDLJ6UvnDpDytF0QmcMnxA+nn1hrxn+uo6CYwJ77eYf20VvMm/XlMIWtat0J+guWYsitW8kP2avy18w72KBLiE0PVu2K3p+IHyvGIOCpJ/IEi5oirvzEmNSvTlEtA95ze/WIIBifkLTh0hYWWwE2owZ2CCdJDNBLJZ4syqw6ayzhpyGwCYBIZrzqdB2T2BTEth0c7ircCYxps1TENgUIaBTOGjZFDKlceK04/md6CyTs023rXGsjDg5FEigTPYblFB5szVgsWfpObWiae4q48TNJtD8Xqc5l+5ugyIJFUloKgwt7bu7qq5fbyrfieMA/wl1ip/cdo7TxRgqE+zuqWFvjzI47Auz15hDGTPGi+BHr/LsB5APt1WFCzPMCO57987fivOfYu/6tr3KNRJCJLDYY9ggTM+5r/OizMiCfv2lTbltrFDVGcNUivDaBvuf7qmhJ2bsXxguApMNLFPEWhIPQHPWQ5Xiw0Fn045AQUj+hV00TSRMBHEKNXEKJG5PiJJ6i64Tfw51DkjjBHv8AQoV7J+kqVTIAAAAAElFTkSuQmCC",
+                                symbolSize: [40, 40],
+                                symbolOffset: [20, 0],
+                                z: 2,
+                                data: [],
+                            },
+                        ],
+                    }
+                    let seriesStyle = {
+                        showBackground: true,
+                        backgroundStyle: {color: "rgba(241, 248, 255, 0.1)", opacity: 1},
+                        itemStyle: {
+                            shadowBlur: 0,
+                            shadowColor: "#5c1717",
+                            shadowOffsetX: 0,
+                            shadowOffsetY: 0,
+                            borderRadius: 0,
+                            borderColor: "#292929",
+                            borderWidth: 0,
+                            borderType: "dotted",
+                        },
+                        label: {
+                            show: false,
+                            position: "right",
+                            color: "#fff",
+                            fontSize: 12,
+                        },
+                        barWidth: 10,
+                        z: 1,
+                    }
+
+                    // 指定图表的数据
+                    let data = obj.data
+                    //数据处理 开始
+                    let xKey = "value"
+                    let yKey = "time"
+                    let sKey = "name"
+                    let dataSeries = deepCopy(option.series)
+                    let seriesArr = []
+                    let dataColumn = []
+                    const colorList = option.color
+                    data.forEach((item) => seriesArr.push(item[sKey]))
+                    seriesArr = [...new Set(seriesArr)]
+                    if (xKey && xKey) {
+                        data.forEach((item) => dataColumn.push(item[yKey]))
+                        dataColumn = [...new Set(dataColumn)]
+                        seriesArr.forEach((item) => {
+                            let data1 = []
+                            data.forEach((oitem) => {
+                                if (oitem[sKey] === item) {
+                                    data1.push({
+                                        name: oitem[yKey],
+                                        value: oitem[xKey],
+                                    })
+                                }
+                            })
+                            dataSeries.unshift({
+                                name: item,
+                                data: data1,
+                                type: "bar",
+                            })
+                        })
+                    }
+                    let seriesObj = dataSeries.map((item) => {
+                        if (item.useSeriesStyle != false) {
+                            return (item = _.merge(item, seriesStyle, {
+                                itemStyle: {
+                                    color: (params) => {
+                                        if (params.dataIndex < 3) {
+                                            return colorList[0]
+                                        } else {
+                                            return colorList[1]
+                                        }
+                                    },
+                                },
+                            }))
+                        } else {
+                            return (item = item)
+                        }
+                    })
+                    let arr1 = [],
+                        arr2 = []
+                    seriesObj[0].data.sort((a, b) => {
+                        return b.value - a.value
+                    })
+                    seriesObj[0].data.forEach((item) => {
+                        arr1.push(item.name)
+                        arr2.push(item.value)
+                    })
+                    option.yAxis[0].data = arr1
+                    option.yAxis[1].data = arr2
+                    option.yAxis[0].axisLabel.formatter = function (value, index) {
+                        return `No.${index + 1} ${value}`
+                    }
+                    if (seriesObj.length) {
+                        let dataArr = seriesObj[0].data
+                        let maxNumber = dataArr[0].value
+                        let arr = []
+                        dataArr.forEach((item) => {
+                            arr.push({
+                                value: item.value,
+                                symbolPosition: "end",
+                            })
+                        })
+                        seriesObj[1].data = arr
+                    }
+                    // 数据处理完
+                    option.series = seriesObj
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option)
+                }
+            })
+            $.ajax({
+                url: "/data/sales/distribution",
+                method: "POST",
+                data:{"c":value,"s":value2},
+                dataType: 'json',
+                success: function (obj) {
+                    $("#main").html(obj.data)
+                    const myChart = echarts.init(
+                        document.getElementById("item-sales-dist-table")
+                    )
+                    // 指定图表的配置项
+                    let option = {
+                        grid: {top: 100, left: "10%", right: "10%", bottom: "10%"},
+                        color: ["#ffe45e", "#e8aa2e", "#43e8f3", "#3d9cff", "#5158fa"],
+                        graphic: null,
+                        series: [
+                            {
+                                radius: ["25%", "75%"],
+                                center: ["50%", "50%"],
+                                roseType: "area",
+                                itemStyle: {
+                                    borderWidth: 0,
+                                    borderColor: "#3D9Cff",
+                                    shadowColor: "#3D9Cff",
+                                    borderRadius: 0,
+                                    shadowBlur: 0,
+                                    shadowOffsetX: 0,
+                                    shadowOffsetY: 0,
+                                },
+                                label: {
+                                    show: true,
+                                    fontSize: 14,
+                                    lineHeight: 22,
+                                    formatter: null,
+                                    color: "#ffffff",
+                                    position: "outside",
+                                },
+                                labelLine: {
+                                    length: 5,
+                                    length2: 5,
+                                    show: true,
+                                    color: "#00ffff",
+                                    lineStyle: {width: 1, type: "solid"},
+                                },
+                                type: "pie",
+                            },
+                        ],
+                    }
+                    option.series[0].label.formatter = (params) => {
+                        return parseInt(params.percent) + "%" + "\n" + params.name
+                    }
+                    // 指定图表的数据
+                    let data = obj.data
+
+                    //映射
+                    data = data.map((item) => {
+                        return {value: item["value"], name: item["name"]}
+                    })
+                    option.series[0].data = data
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option)
+                }
+            })
+            $.ajax({
+                url: "/data/price/distribution",
+                method: "POST",
+                data:{"c":value,"s":value2},
+                dataType: 'json',
+                success: function (obj) {
+                    $("#main").html(obj.data)
+                    const myChart = echarts.init(
+                        document.getElementById("item-price-dist-table")
+                    )
+                    // 指定图表的配置项
+                    let option = {
+                        grid: {top: 100, left: "10%", right: "10%", bottom: "10%"},
+                        color: ["#ffe45e", "#e8aa2e", "#43e8f3", "#3d9cff", "#5158fa"],
+                        graphic: null,
+                        series: [
+                            {
+                                radius: ["25%", "75%"],
+                                center: ["50%", "50%"],
+                                roseType: "area",
+                                itemStyle: {
+                                    borderWidth: 0,
+                                    borderColor: "#3D9Cff",
+                                    shadowColor: "#3D9Cff",
+                                    borderRadius: 0,
+                                    shadowBlur: 0,
+                                    shadowOffsetX: 0,
+                                    shadowOffsetY: 0,
+                                },
+                                label: {
+                                    show: true,
+                                    fontSize: 14,
+                                    lineHeight: 22,
+                                    formatter: null,
+                                    color: "#ffffff",
+                                    position: "outside",
+                                },
+                                labelLine: {
+                                    length: 5,
+                                    length2: 5,
+                                    show: true,
+                                    color: "#00ffff",
+                                    lineStyle: {width: 1, type: "solid"},
+                                },
+                                type: "pie",
+                            },
+                        ],
+                    }
+                    option.series[0].label.formatter = (params) => {
+                        return parseInt(params.percent) + "%" + "\n" + params.name
+                    }
+                    // 指定图表的数据
+                    let data = obj.data
+
+                    //映射
+                    data = data.map((item) => {
+                        return {value: item["value"], name: item["name"]}
+                    })
+                    option.series[0].data = data
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option)
+                }
+            })
+            $.ajax({
+                url: "/data/category/count",
+                method: "POST",
+                data:{"c":value,"s":value2},
+                dataType: 'json',
+                success: function (obj) {
+                    $("#main").html(obj.data)
+                    const myChart = echarts.init(
+                        document.getElementById("item-category-total-table")
+                    )
+                    // 指定图表的配置项
+                    let option = {
+                        grid: {
+                            top: 15,
+                            left: 15,
+                            right: 15,
+                            bottom: 15,
+                            containLabel: true,
+                        }, tooltip: {
+                            trigger: 'axis',
+                            formatter: '{b}<br/>商品总数:{c}'
+
+                        },
+                        legend: {
+                            show: false,
+                            top: "top",
+                            left: "right",
+                            orient: "horizontal",
+                            itemWidth: 25,
+                            itemHeight: 10,
+                            itemGap: 10,
+                            icon: "circle",
+                            textStyle: {color: "#ffffff", fontSize: 12, lineHeight: 14},
+                        },
+                        xAxis: {
+                            show: true,
+                            axisLabel: {
+                                show: true,
+                                color: "#A9AEB2",
+                                fontSize: 12,
+                                margin: 20,
+                                height: "14px",
+                            },
+                            axisLine: {
+                                show: false,
+                                lineStyle: {color: "#181919", type: "solid", width: 1},
+                            },
+                            axisTick: {
+                                show: false,
+                                lineStyle: {color: "#181919", type: "solid", width: 1},
+                            },
+                            splitLine: {
+                                show: false,
+                                lineStyle: {color: "#181919", type: "dashed", width: 1},
+                            },
+                            data: [],
+                        },
+                        yAxis: {
+                            show: true,
+                            name: "单位",
+                            nameTextStyle: {
+                                color: "A3A7A9",
+                                fontSize: 12,
+                                padding: [0, 40, 0, 0],
+                            },
+                            axisLabel: {
+                                show: true,
+                                margin: 8,
+                                color: "rgba(194, 194, 194, 1)",
+                                fontSize: 12,
+                            },
+                            axisLine: {
+                                show: false,
+                                lineStyle: {color: "#181919", type: "solid", width: 1},
+                            },
+                            axisTick: {
+                                show: false,
+                                lineStyle: {color: "#181919", type: "solid", width: 1},
+                            },
+                            splitLine: {
+                                show: true,
+                                lineStyle: {color: "#181919", type: "dashed", width: 1},
+                            },
+                        },
+                        color: [
+                            {
+                                type: "linear",
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [
+                                    {offset: 0, color: "#399efe"},
+                                    {offset: 0.82, color: "#06f6f0"},
+                                ],
+                            },
+                            "rgba(6,246,240,1)",
+                            "rgba(102,200,255,1)",
+                        ],
+                        series: [
+                            {
+                                z: 2,
+                                type: "pictorialBar",
+                                data: [],
+                                symbol: "diamond",
+                                symbolOffset: [0, "50%"],
+                                useSeriesStyle: false,
+                                itemStyle: {normal: {borderWidth: 0}},
+                            },
+                            {
+                                z: 3,
+                                type: "pictorialBar",
+                                useSeriesStyle: false,
+                                symbolPosition: "end",
+                                data: [],
+                                symbol: "diamond",
+                                symbolOffset: [0, "-50%"],
+                                itemStyle: {normal: {borderWidth: 0}},
+                            },
+                        ],
+                    }
+                    let seriesStyle = {
+                        showBackground: false,
+                        backgroundStyle: {color: "#0F2024", opacity: 1},
+                        itemStyle: {
+                            shadowBlur: 0,
+                            shadowColor: "#5c1717",
+                            shadowOffsetX: 0,
+                            shadowOffsetY: 0,
+                            borderRadius: 0,
+                            borderColor: "#292929",
+                            borderWidth: 0,
+                            borderType: "dotted",
+                        },
+                        barWidth: 24,
+                        label: {
+                            show: true,
+                            position: "top",
+                            color: "#3D9CFF",
+                            fontSize: 12,
+                            lineHeight: 16,
+                        },
+                        barGap: "50%",
+                    }
+
+                    // 指定图表的数据
+                    let data = obj.data
+
+                    //数据处理 开始
+                    let xKey = "time"
+                    let yKey = "value"
+                    let sKey = "name"
+                    let seriesArr = []
+                    let dataColumn = []
+                    data.forEach((item) => seriesArr.push(item[sKey]))
+                    seriesArr = [...new Set(seriesArr)]
+                    let complexSeries = []
+                    if (xKey && xKey) {
+                        data.forEach((item) => dataColumn.push(item[xKey]))
+                        dataColumn = [...new Set(dataColumn)]
+
+                        function calcOffset(index) {
+                            const ofe = 70
+                            const length = seriesArr.length
+                            const startX = -(ofe * (length - 1))
+                            const offsetX = startX + ofe * index * 2
+                            return offsetX + "%"
+                        }
+
+                        seriesArr.forEach((item, index) => {
+                            let arr = []
+                            data.forEach((oitem) => {
+                                if (oitem[sKey] === item) {
+                                    arr.push({
+                                        name: oitem[xKey],
+                                        value: oitem[yKey],
+                                    })
+                                }
+                            })
+                            complexSeries.push({
+                                name: item,
+                                data: arr,
+                                type: "bar",
+                            })
+                            let copyStyleSeries = deepCopy(option.series)
+                            copyStyleSeries[0].data = arr
+                            copyStyleSeries[1].data = arr
+
+                            copyStyleSeries[0].symbolSize = [
+                                seriesStyle.barWidth,
+                                seriesStyle.barWidth * 0.5,
+                            ]
+                            copyStyleSeries[1].symbolSize = [
+                                seriesStyle.barWidth,
+                                seriesStyle.barWidth * 0.5,
+                            ]
+                            copyStyleSeries[0].symbolOffset = [calcOffset(index), "50%"]
+                            copyStyleSeries[1].symbolOffset = [calcOffset(index), "-50%"]
+                            complexSeries.push(...copyStyleSeries)
+                        })
+                    }
+                    let seriesObj = complexSeries.map((item) => {
+                        if (item.useSeriesStyle != false) {
+                            return (item = Object.assign(item, seriesStyle))
+                        } else {
+                            return (item = item)
+                        }
+                    })
+
+                    option.yAxis.type = "value"
+                    option.xAxis.type = "category"
+                    option.xAxis.data = dataColumn
+                    // 数据处理完
+                    option.series = seriesObj
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option)
+                }
+            })
+            $.ajax({
+                url: "/data/sales/month",
+                method: "POST",
+                data:{"c":value,"s":value2},
+                dataType: 'json',
+                success: function (obj) {
+                    $("#main").html(obj.data)
+                    const myChart = echarts.init(
+                        document.getElementById("item-sales-month")
+                    )
+                    // 指定图表的配置项
+                    let option = {
+                        grid: {
+                            top: 15,
+                            left: 15,
+                            right: 15,
+                            bottom: 15,
+                            containLabel: true,
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            show: false,
+                            top: 10,
+                            left: "right",
+                            orient: "horizontal",
+                            itemWidth: 25,
+                            itemHeight: 10,
+                            itemGap: 10,
+                            icon: "circle",
+                            textStyle: {color: "#ffffff", fontSize: 12, lineHeight: 14},
+                        },
+                        xAxis: {
+                            show: true,
+                            axisLabel: {
+                                show: true,
+                                color: "rgba(241, 248, 255, 0.7)",
+                                fontSize: 12,
+                                margin: 8,
+                            },
+                            axisLine: {
+                                show: true,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            axisTick: {
+                                show: false,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            splitLine: {
+                                show: false,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            data: obj.times,
+                            smooth: false,
+                            type: "category",
+                        },
+                        yAxis: {
+                            show: true,
+                            axisLabel: {
+                                show: true,
+                                color: "rgba(241, 248, 255, 0.7)",
+                                fontSize: 12,
+                                margin: 8,
+                            },
+                            axisLine: {
+                                show: false,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            axisTick: {
+                                show: false,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            splitLine: {
+                                show: true,
+                                lineStyle: {
+                                    color: "rgba(241, 248, 255, 0.1)",
+                                    type: "dashed",
+                                    width: 1,
+                                },
+                            },
+                            type: "value",
+                        },
+                        color: [
+                            {
+                                type: "linear",
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [
+                                    {offset: 0, color: "#3D9CFF"},
+                                    {offset: 0.82, color: "#3ca0fe19"},
+                                ],
+                            },
+                        ],
+                        series: [],
+                    }
+                    let seriesStyle = {
+                        showBackground: false,
+                        backgroundStyle: {color: "#0F2024", opacity: 0},
+                        label: {
+                            show: false,
+                            position: "top",
+                            color: "#ffffff",
+                            fontSize: 12,
+                        },
+                        areaStyle: {
+                            opacity: 1,
+                            shadowBlur: 0,
+                            shadowColor: "#85a5ff",
+                            shadowOffsetX: 0,
+                            shadowOffsetY: 0,
+                        },
+                        lineStyle: {
+                            opacity: 1,
+                            type: "solid",
+                            width: 2,
+                            shadowBlur: 0,
+                            shadowOffsetX: 0,
+                            shadowOffsetY: 0,
+                        },
+                        showSymbol: true,
+                        symbol: "emptyCircle",
+                        symbolSize: 10,
+                        symbolOffset: [0, 0],
+                        step: false,
+                    }
+                    // 指定图表的数据
+                    let data = obj.data
+
+                    let sKey = "name"
+                    let xKey = "time"
+                    let yKey = "value"
+                    let seriesArr = data.map((item) => item[sKey])
+                    seriesArr = [...new Set(seriesArr)]
+                    option.series = []
+                    seriesArr.forEach((item, index) => {
+                        const datas = data
+                            .filter((oitem) => oitem[sKey] === item)
+                            .map((_item) => {
+                                return {name: _item[xKey], value: _item[yKey]}
+                            })
+                        option.series.push({
+                            name: item,
+                            data: datas,
+                            type: "line",
+                            ...seriesStyle,
+                        })
+                    })
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option)
+                }
+            })
+            })
+
+
+    }
+
+</script>
+
+
+<div class="container">
+
+    <!-- 组件时间开始-->
+
+    <div id="item-tiems"></div>
+
+    <script type="text/javascript">
+        $(function () {
+            const dom = document.querySelector(
+                "#item-tiems"
+            )
+            const loadTime = () => {
+                dom.innerHTML = dayjs()
+                    .locale("zh-cn")
+                    .format("YYYY年MM-DD dddd HH:mm:ss.SSS A")
+            }
+            loadTime()
+
+            setInterval(loadTime, 1000)
+        })
+    </script>
+    <style>
+        #item-tiems {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 1);
+
+            line-height: 60px;
+            text-align: center;
+            font-weight: normal;
+            letter-spacing: 2px;
+        }
+    </style>
+    <!-- 组件时间结束-->
+
+    <!-- 组件总商铺统计开始-->
+    <div id="item-total-1">
+        <span class="countto"></span>
+        <span class="suffix"> /所 </span>
+    </div>
+    <style>
+        #item-total-1 {
+            width: 300px;
+            height: 50px;
+            text-align: center;
+        }
+
+        #item-total-1 .countto {
+            font-size: 30px;
+            color: rgba(255, 255, 255, 1);
+
+            text-shadow: 0px 0px 14px rgba(15, 146, 255, 1);
+
+            line-height: 50px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            font-style: italic;
+        }
+
+        #item-total-1 .suffix {
+            color: rgba(221, 221, 221, 1);
+            font-size: 16px;
+        }
+    </style>
+    <!-- 组件总商铺统计结束-->
+
+    <!-- 组件商品种类总数开始-->
+    <div id="item-total-2">
+        <span class="countto"></span>
+        <span class="suffix"> /类 </span>
+    </div>
+    <style>
+        #item-total-2 {
+            width: 300px;
+            height: 50px;
+            text-align: center;
+        }
+
+        #item-total-2 .countto {
+            font-size: 30px;
+            color: rgba(255, 255, 255, 1);
+
+            text-shadow: 0px 0px 14px rgba(15, 146, 255, 1);
+
+            line-height: 50px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            font-style: italic;
+        }
+
+        #item-total-2 .suffix {
+            color: rgba(221, 221, 221, 1);
+            font-size: 16px;
+        }
+    </style>
+    <!-- 组件商品种类总数结束-->
+
+    <!-- 组件数据总数开始-->
+    <div id="item-total-3">
+        <span class="countto"></span>
+        <span class="suffix"> /条 </span>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+                url: "/data/total",
+                method: "GET",
+                success: function (obj) {
+                    let data_1 = obj.shop
+                    let data_2 = obj.category
+                    let data_3 = obj.goods
+
+                    $("#item-total-1 .countto").countTo({
+                        from: 0,
+                        to: data_1,
+                        speed: 3000,
+                        decimals: 0,
+                        formatter: (value, options) => {
+                            return (
+                                "总店铺：" +
+                                value
+                                    .toFixed(options.decimals)
+                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            )
+                        },
+                    })
+
+                    $("#item-total-2 .countto").countTo({
+                        from: 0,
+                        to: data_2,
+                        speed: 3000,
+                        decimals: 0,
+                        formatter: (value, options) => {
+                            return (
+                                "总类别：" +
+                                value
+                                    .toFixed(options.decimals)
+                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            )
+                        },
+                    })
+
+                    $("#item-total-3 .countto").countTo({
+                        from: 0,
+                        to: data_3,
+                        speed: 3000,
+                        decimals: 0,
+                        formatter: (value, options) => {
+                            return (
+                                "总数据：" +
+                                value
+                                    .toFixed(options.decimals)
+                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            )
+                        },
+                    })
+                }
+            })
+        })
+    </script>
+    <style>
+        #item-total-3 {
+            width: 300px;
+            height: 50px;
+            text-align: center;
+        }
+
+        #item-total-3 .countto {
+            font-size: 30px;
+            color: rgba(255, 255, 255, 1);
+
+            text-shadow: 0px 0px 14px rgba(15, 146, 255, 1);
+
+            line-height: 50px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            font-style: italic;
+        }
+
+        #item-total-3 .suffix {
+            color: rgba(221, 221, 221, 1);
+            font-size: 16px;
+        }
+    </style>
+    <!-- 组件数据总数结束-->
+
+    <!-- 组件后台管理开始-->
+    <a href="/admin">
+        <div id="item-admin-href">
+            <p class="">后台管理</p>
+        </div>
+    </a>
+    <style>
+        #item-admin-href {
+            line-height: 1.5;
+            font-size: 18px;
+            text-align: center;
+            font-weight: normal;
+            font-style: normal;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+        }
+
+        #item-admin-href .rich-text {
+            white-space: nowrap;
+            overflow: visible;
+            line-height: 1.2;
+            letter-spacing: -1px;
+            margin-top: -2px;
+        }
+    </style>
+
+    <div id="item-admin-href-icon"></div>
+    <style>
+        #item-admin-href-icon {
+            width: 20px;
+            height: 20px;
+            background: #3d9cff;
+        }
+    </style>
+    <!-- 组件后台管理结束-->
+
+    <!-- 组件可视化标题开始-->
+    <div id="item-view-title">
+        <h1>电商页面数据爬取+分析可视化平台</h1>
+
+    </div>
+
+    <style>
+        #item-view-title {
+            color: #ffffff;
+            display: flex;
+            text-align: center;
+            line-height: 1;
+            font-style: normal;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+    <!-- 组件可视化标题结束-->
+
+    <!-- 组件月销走势开始-->
+    <div id="item-sales-month-title">
+        <p class="">总销量走势图</p>
+    </div>
+    <style>
+        #item-sales-month-title {
+            line-height: 1.5;
+            font-size: 25px;
+            text-align: center;
+            font-weight: normal;
+            font-style: normal;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+        }
+
+        #item-sales-month-title .rich-text {
+            white-space: nowrap;
+            overflow: visible;
+            line-height: 1.2;
+            letter-spacing: -1px;
+            margin-top: -2px;
+        }
+    </style>
+    <div id="item-sales-month"></div>
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+                url: "/data/sales/month",
+                method: "GET",
+                success: function (obj) {
+                    // 基于准备好的dom，初始化echarts实例
+                    const myChart = echarts.init(
+                        document.getElementById("item-sales-month")
+                    )
+                    // 指定图表的配置项
+                    let option = {
+                        grid: {
+                            top: 15,
+                            left: 15,
+                            right: 15,
+                            bottom: 15,
+                            containLabel: true,
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            show: false,
+                            top: 10,
+                            left: "right",
+                            orient: "horizontal",
+                            itemWidth: 25,
+                            itemHeight: 10,
+                            itemGap: 10,
+                            icon: "circle",
+                            textStyle: {color: "#ffffff", fontSize: 12, lineHeight: 14},
+                        },
+                        xAxis: {
+                            show: true,
+                            axisLabel: {
+                                show: true,
+                                color: "rgba(241, 248, 255, 0.7)",
+                                fontSize: 12,
+                                margin: 8,
+                            },
+                            axisLine: {
+                                show: true,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            axisTick: {
+                                show: false,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            splitLine: {
+                                show: false,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            data: obj.times,
+                            smooth: false,
+                            type: "category",
+                        },
+                        yAxis: {
+                            show: true,
+                            axisLabel: {
+                                show: true,
+                                color: "rgba(241, 248, 255, 0.7)",
+                                fontSize: 12,
+                                margin: 8,
+                            },
+                            axisLine: {
+                                show: false,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            axisTick: {
+                                show: false,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            splitLine: {
+                                show: true,
+                                lineStyle: {
+                                    color: "rgba(241, 248, 255, 0.1)",
+                                    type: "dashed",
+                                    width: 1,
+                                },
+                            },
+                            type: "value",
+                        },
+                        color: [
+                            {
+                                type: "linear",
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [
+                                    {offset: 0, color: "#3D9CFF"},
+                                    {offset: 0.82, color: "#3ca0fe19"},
+                                ],
+                            },
+                        ],
+                        series: [],
+                    }
+                    let seriesStyle = {
+                        showBackground: false,
+                        backgroundStyle: {color: "#0F2024", opacity: 0},
+                        label: {
+                            show: false,
+                            position: "top",
+                            color: "#ffffff",
+                            fontSize: 12,
+                        },
+                        areaStyle: {
+                            opacity: 1,
+                            shadowBlur: 0,
+                            shadowColor: "#85a5ff",
+                            shadowOffsetX: 0,
+                            shadowOffsetY: 0,
+                        },
+                        lineStyle: {
+                            opacity: 1,
+                            type: "solid",
+                            width: 2,
+                            shadowBlur: 0,
+                            shadowOffsetX: 0,
+                            shadowOffsetY: 0,
+                        },
+                        showSymbol: true,
+                        symbol: "emptyCircle",
+                        symbolSize: 10,
+                        symbolOffset: [0, 0],
+                        step: false,
+                    }
+                    // 指定图表的数据
+                    let data = obj.data
+
+                    let sKey = "name"
+                    let xKey = "time"
+                    let yKey = "value"
+                    let seriesArr = data.map((item) => item[sKey])
+                    seriesArr = [...new Set(seriesArr)]
+                    option.series = []
+                    seriesArr.forEach((item, index) => {
+                        const datas = data
+                            .filter((oitem) => oitem[sKey] === item)
+                            .map((_item) => {
+                                return {name: _item[xKey], value: _item[yKey]}
+                            })
+                        option.series.push({
+                            name: item,
+                            data: datas,
+                            type: "line",
+                            ...seriesStyle,
+                        })
+                    })
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option)
+                }
+            })
+        })
+    </script>
+    <!-- 组件月销走势结束-->
+
+    <!-- 组件销量分布开始-->
+    <div id="item-sales-dist-title">
+        <p class="">商品销量分布</p>
+    </div>
+
+    <style>
+        #item-sales-dist-title {
+            line-height: 1.5;
+            font-size: 25px;
+            text-align: center;
+            font-weight: normal;
+            font-style: normal;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+        }
+
+        #item-sales-dist-title .rich-text {
+            white-space: nowrap;
+            overflow: visible;
+            line-height: 1.2;
+            letter-spacing: -1px;
+            margin-top: -2px;
+        }
+    </style>
+
+    <div id="item-sales-dist-table"></div>
+
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+                url: "/data/sales/distribution",
+                method: "GET",
+                success: function (obj) {
+                    // 基于准备好的dom，初始化echarts实例
+                    const myChart = echarts.init(
+                        document.getElementById("item-sales-dist-table")
+                    )
+                    // 指定图表的配置项
+                    let option = {
+                        grid: {top: 100, left: "10%", right: "10%", bottom: "10%"},
+                        color: ["#ffe45e", "#e8aa2e", "#43e8f3", "#3d9cff", "#5158fa"],
+                        graphic: null,
+                        series: [
+                            {
+                                radius: ["25%", "75%"],
+                                center: ["50%", "50%"],
+                                roseType: "area",
+                                itemStyle: {
+                                    borderWidth: 0,
+                                    borderColor: "#3D9Cff",
+                                    shadowColor: "#3D9Cff",
+                                    borderRadius: 0,
+                                    shadowBlur: 0,
+                                    shadowOffsetX: 0,
+                                    shadowOffsetY: 0,
+                                },
+                                label: {
+                                    show: true,
+                                    fontSize: 14,
+                                    lineHeight: 22,
+                                    formatter: null,
+                                    color: "#ffffff",
+                                    position: "outside",
+                                },
+                                labelLine: {
+                                    length: 5,
+                                    length2: 5,
+                                    show: true,
+                                    color: "#00ffff",
+                                    lineStyle: {width: 1, type: "solid"},
+                                },
+                                type: "pie",
+                            },
+                        ],
+                    }
+                    option.series[0].label.formatter = (params) => {
+                        return parseInt(params.percent) + "%" + "\n" + params.name
+                    }
+                    // 指定图表的数据
+                    let data = obj.data
+
+                    //映射
+                    data = data.map((item) => {
+                        return {value: item["value"], name: item["name"]}
+                    })
+                    option.series[0].data = data
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option)
+                }
+            })
+        })
+    </script>
+    <!-- 组件销量分布结束-->
+
+
+    <!-- 组件价格分布开始-->
+    <div id="item-price-dist-title">
+        <p class="">商品价格分布</p>
+    </div>
+    <style>
+        #item-price-dist-title {
+            line-height: 1.5;
+            font-size: 25px;
+            text-align: center;
+            font-weight: normal;
+            font-style: normal;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+        }
+
+        #item-price-dist-title .rich-text {
+            white-space: nowrap;
+            overflow: visible;
+            line-height: 1.2;
+            letter-spacing: -1px;
+            margin-top: -2px;
+        }
+    </style>
+    <div id="item-price-dist-table"></div>
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+                url: "/data/price/distribution",
+                method: "GET",
+                success: function (obj) {
+                    // 基于准备好的dom，初始化echarts实例
+                    const myChart = echarts.init(
+                        document.getElementById("item-price-dist-table")
+                    )
+                    // 指定图表的配置项
+                    let option = {
+                        grid: {top: 100, left: "10%", right: "10%", bottom: "10%"},
+                        color: ["#ffe45e", "#e8aa2e", "#43e8f3", "#3d9cff", "#5158fa"],
+                        graphic: null,
+                        series: [
+                            {
+                                radius: ["25%", "75%"],
+                                center: ["50%", "50%"],
+                                roseType: "area",
+                                itemStyle: {
+                                    borderWidth: 0,
+                                    borderColor: "#3D9Cff",
+                                    shadowColor: "#3D9Cff",
+                                    borderRadius: 0,
+                                    shadowBlur: 0,
+                                    shadowOffsetX: 0,
+                                    shadowOffsetY: 0,
+                                },
+                                label: {
+                                    show: true,
+                                    fontSize: 14,
+                                    lineHeight: 22,
+                                    formatter: null,
+                                    color: "#ffffff",
+                                    position: "outside",
+                                },
+                                labelLine: {
+                                    length: 5,
+                                    length2: 5,
+                                    show: true,
+                                    color: "#00ffff",
+                                    lineStyle: {width: 1, type: "solid"},
+                                },
+                                type: "pie",
+                            },
+                        ],
+                    }
+                    option.series[0].label.formatter = (params) => {
+                        return parseInt(params.percent) + "%" + "\n" + params.name
+                    }
+                    // 指定图表的数据
+                    let data = obj.data
+
+                    //映射
+                    data = data.map((item) => {
+                        return {value: item["value"], name: item["name"]}
+                    })
+                    option.series[0].data = data
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option)
+                }
+            })
+        })
+    </script>
+    <!-- 组件价格分布结束-->
+
+
+    <!-- 组件背景开始-->
+    <div id="itemeea68fc0-b643-11ec-a585-132c1d24786f">
+        <img
+                src="./static/images/996e9fa9-9e57-4d67-8c20-2f970d1e2a27.png"
+                alt=""
+        />
+    </div>
+    <style>
+        #itemeea68fc0-b643-11ec-a585-132c1d24786f {
+            width: 1920px;
+            height: 70px;
+        }
+
+        #itemeea68fc0-b643-11ec-a585-132c1d24786f img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <!-- 组件背景结束-->
+
+    <!-- 组件分类产品统计开始-->
+    <div id="item-category-total-title">
+        <p class="">分类产品统计</p>
+    </div>
+    <style>
+        #item-category-total-title {
+            line-height: 1.5;
+            font-size: 25px;
+            text-align: center;
+            font-weight: normal;
+            font-style: normal;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+        }
+
+        #item-category-total-title .rich-text {
+            white-space: nowrap;
+            overflow: visible;
+            line-height: 1.2;
+            letter-spacing: -1px;
+            margin-top: -2px;
+        }
+    </style>
+    <div id="item-category-total-table"></div>
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+                url: "/data/category/count",
+                method: "GET",
+                success: function (obj) {
+                    // 基于准备好的dom，初始化echarts实例
+                    const myChart = echarts.init(
+                        document.getElementById("item-category-total-table")
+                    )
+                    // 指定图表的配置项
+                    let option = {
+                        grid: {
+                            top: 15,
+                            left: 15,
+                            right: 15,
+                            bottom: 15,
+                            containLabel: true,
+                        }, tooltip: {
+                            trigger: 'axis',
+                            formatter: '{b}<br/>商品总数:{c}'
+
+                        },
+                        legend: {
+                            show: false,
+                            top: "top",
+                            left: "right",
+                            orient: "horizontal",
+                            itemWidth: 25,
+                            itemHeight: 10,
+                            itemGap: 10,
+                            icon: "circle",
+                            textStyle: {color: "#ffffff", fontSize: 12, lineHeight: 14},
+                        },
+                        xAxis: {
+                            show: true,
+                            axisLabel: {
+                                show: true,
+                                color: "#A9AEB2",
+                                fontSize: 12,
+                                margin: 20,
+                                height: "14px",
+                            },
+                            axisLine: {
+                                show: false,
+                                lineStyle: {color: "#181919", type: "solid", width: 1},
+                            },
+                            axisTick: {
+                                show: false,
+                                lineStyle: {color: "#181919", type: "solid", width: 1},
+                            },
+                            splitLine: {
+                                show: false,
+                                lineStyle: {color: "#181919", type: "dashed", width: 1},
+                            },
+                            data: [],
+                        },
+                        yAxis: {
+                            show: true,
+                            name: "单位",
+                            nameTextStyle: {
+                                color: "A3A7A9",
+                                fontSize: 12,
+                                padding: [0, 40, 0, 0],
+                            },
+                            axisLabel: {
+                                show: true,
+                                margin: 8,
+                                color: "rgba(194, 194, 194, 1)",
+                                fontSize: 12,
+                            },
+                            axisLine: {
+                                show: false,
+                                lineStyle: {color: "#181919", type: "solid", width: 1},
+                            },
+                            axisTick: {
+                                show: false,
+                                lineStyle: {color: "#181919", type: "solid", width: 1},
+                            },
+                            splitLine: {
+                                show: true,
+                                lineStyle: {color: "#181919", type: "dashed", width: 1},
+                            },
+                        },
+                        color: [
+                            {
+                                type: "linear",
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [
+                                    {offset: 0, color: "#399efe"},
+                                    {offset: 0.82, color: "#06f6f0"},
+                                ],
+                            },
+                            "rgba(6,246,240,1)",
+                            "rgba(102,200,255,1)",
+                        ],
+                        series: [
+                            {
+                                z: 2,
+                                type: "pictorialBar",
+                                data: [],
+                                symbol: "diamond",
+                                symbolOffset: [0, "50%"],
+                                useSeriesStyle: false,
+                                itemStyle: {normal: {borderWidth: 0}},
+                            },
+                            {
+                                z: 3,
+                                type: "pictorialBar",
+                                useSeriesStyle: false,
+                                symbolPosition: "end",
+                                data: [],
+                                symbol: "diamond",
+                                symbolOffset: [0, "-50%"],
+                                itemStyle: {normal: {borderWidth: 0}},
+                            },
+                        ],
+                    }
+                    let seriesStyle = {
+                        showBackground: false,
+                        backgroundStyle: {color: "#0F2024", opacity: 1},
+                        itemStyle: {
+                            shadowBlur: 0,
+                            shadowColor: "#5c1717",
+                            shadowOffsetX: 0,
+                            shadowOffsetY: 0,
+                            borderRadius: 0,
+                            borderColor: "#292929",
+                            borderWidth: 0,
+                            borderType: "dotted",
+                        },
+                        barWidth: 24,
+                        label: {
+                            show: true,
+                            position: "top",
+                            color: "#3D9CFF",
+                            fontSize: 12,
+                            lineHeight: 16,
+                        },
+                        barGap: "50%",
+                    }
+
+                    // 指定图表的数据
+                    let data = obj.data
+
+                    //数据处理 开始
+                    let xKey = "time"
+                    let yKey = "value"
+                    let sKey = "name"
+                    let seriesArr = []
+                    let dataColumn = []
+                    data.forEach((item) => seriesArr.push(item[sKey]))
+                    seriesArr = [...new Set(seriesArr)]
+                    let complexSeries = []
+                    if (xKey && xKey) {
+                        data.forEach((item) => dataColumn.push(item[xKey]))
+                        dataColumn = [...new Set(dataColumn)]
+
+                        function calcOffset(index) {
+                            const ofe = 70
+                            const length = seriesArr.length
+                            const startX = -(ofe * (length - 1))
+                            const offsetX = startX + ofe * index * 2
+                            return offsetX + "%"
+                        }
+
+                        seriesArr.forEach((item, index) => {
+                            let arr = []
+                            data.forEach((oitem) => {
+                                if (oitem[sKey] === item) {
+                                    arr.push({
+                                        name: oitem[xKey],
+                                        value: oitem[yKey],
+                                    })
+                                }
+                            })
+                            complexSeries.push({
+                                name: item,
+                                data: arr,
+                                type: "bar",
+                            })
+                            let copyStyleSeries = deepCopy(option.series)
+                            copyStyleSeries[0].data = arr
+                            copyStyleSeries[1].data = arr
+
+                            copyStyleSeries[0].symbolSize = [
+                                seriesStyle.barWidth,
+                                seriesStyle.barWidth * 0.5,
+                            ]
+                            copyStyleSeries[1].symbolSize = [
+                                seriesStyle.barWidth,
+                                seriesStyle.barWidth * 0.5,
+                            ]
+                            copyStyleSeries[0].symbolOffset = [calcOffset(index), "50%"]
+                            copyStyleSeries[1].symbolOffset = [calcOffset(index), "-50%"]
+                            complexSeries.push(...copyStyleSeries)
+                        })
+                    }
+                    let seriesObj = complexSeries.map((item) => {
+                        if (item.useSeriesStyle != false) {
+                            return (item = Object.assign(item, seriesStyle))
+                        } else {
+                            return (item = item)
+                        }
+                    })
+
+                    option.yAxis.type = "value"
+                    option.xAxis.type = "category"
+                    option.xAxis.data = dataColumn
+                    // 数据处理完
+                    option.series = seriesObj
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option)
+                }
+            })
+        })
+    </script>
+
+    <!-- 组件分类产品统计结束-->
+
+    <!-- 组件商铺排名开始-->
+    <div id="item-shop-top-title">
+        <p class="">店铺销量排行榜</p>
+    </div>
+    <style>
+        #item-shop-top-title {
+            line-height: 1.5;
+            font-size: 25px;
+            text-align: center;
+            font-weight: normal;
+            font-style: normal;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+        }
+
+        #item-shop-top-title .rich-text {
+            white-space: nowrap;
+            overflow: visible;
+            line-height: 1.2;
+            letter-spacing: -1px;
+            margin-top: -2px;
+        }
+    </style>
+    <div id="iteme-shop-top-table"></div>
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+                url: "/data/shop/top",
+                method: "GET",
+                success: function (obj) {
+                    // 基于准备好的dom，初始化echarts实例
+                    const myChart = echarts.init(
+                        document.getElementById("iteme-shop-top-table")
+                    )
+                    // 指定图表的配置项
+                    let option = {
+                        grid: {
+                            top: 15,
+                            left: 15,
+                            right: 15,
+                            bottom: 15,
+                            containLabel: true,
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            show: false,
+                            top: "top",
+                            left: "center",
+                            orient: "horizontal",
+                            itemWidth: 8,
+                            itemHeight: 8,
+                            itemGap: 10,
+                            icon: "rect",
+                            textStyle: {color: "#ffffff", fontSize: 12, lineHeight: 14},
+                        },
+                        xAxis: {
+                            show: false,
+                            axisLabel: {
+                                show: false,
+                                color: "#ffffff",
+                                fontSize: 12,
+                                margin: 8,
+                                height: "14px",
+                            },
+                            axisLine: {
+                                show: true,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            axisTick: {
+                                show: false,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            splitLine: {
+                                show: false,
+                                lineStyle: {color: "#27292d", type: "dashed", width: 1},
+                            },
+                            data: [],
+                            type: "value",
+                        },
+                        yAxis: [
+                            {
+                                type: "category",
+                                show: true,
+                                inverse: true,
+                                axisLabel: {
+                                    show: true,
+                                    color: "#ffffff",
+                                    fontSize: 18,
+                                    margin: 20,
+                                    verticalAlign: "middle",
+                                },
+                                axisLine: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "solid", width: 1},
+                                },
+                                axisTick: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "solid", width: 1},
+                                },
+                                splitLine: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "dashed", width: 1},
+                                },
+                                data: [],
+                            },
+                            {
+                                type: "category",
+                                show: true,
+                                inverse: true,
+                                axisLabel: {
+                                    show: true,
+                                    color: "#ffffff",
+                                    fontSize: 18,
+                                    margin: 20,
+                                },
+                                axisLine: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "solid", width: 1},
+                                },
+                                axisTick: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "solid", width: 1},
+                                },
+                                splitLine: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "dashed", width: 1},
+                                },
+                                data: [],
+                                position: "right",
+                            },
+                        ],
+                        color: [
+                            {
+                                type: "linear",
+                                x: 0,
+                                y: 0,
+                                x2: 1,
+                                y2: 0,
+                                colorStops: [
+                                    {offset: 0, color: "#399efe"},
+                                    {offset: 0.82, color: "#06f6f0"},
+                                ],
+                            },
+                            "#FFFFFF",
+                        ],
+                        series: [
+                            {
+                                name: "",
+                                type: "pictorialBar",
+                                useSeriesStyle: false,
+                                symbol:
+                                    "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAKJSURBVHgBvZfPbxJBFMe/M7tAaUospQFLNHrqwWuTxnAw/AH2aI8aD9YY/V+8aJqgidFjPcrRg/FgtAlXD71oYsQWiqXSUAu7M74HAUkF9kEWP5tlwu5jvvPmx3sPBQG3dqxTrSJugCSiWPAsYlrB4XfGwtdAU7dxGnXx6+19dSzpUwUJ7h8h7StkekJB+AYtFzisJVH7vKlaEwvnXtk0fiMrFRw2AL+N8u4jVRML55/ZSx6QQQjoFirvH6pvgcK55/aKtlhGiHgeah8fqK+Dz/TgF/Y0bFHGdZG68dReHiq8/sSmwpreYZgo0rlt2jeDwtd2bNSJIItZ4yDLJ6UvnDpDytF0QmcMnxA+nn1hrxn+uo6CYwJ77eYf20VvMm/XlMIWtat0J+guWYsitW8kP2avy18w72KBLiE0PVu2K3p+IHyvGIOCpJ/IEi5oirvzEmNSvTlEtA95ze/WIIBifkLTh0hYWWwE2owZ2CCdJDNBLJZ4syqw6ayzhpyGwCYBIZrzqdB2T2BTEth0c7ircCYxps1TENgUIaBTOGjZFDKlceK04/md6CyTs023rXGsjDg5FEigTPYblFB5szVgsWfpObWiae4q48TNJtD8Xqc5l+5ugyIJFUloKgwt7bu7qq5fbyrfieMA/wl1ip/cdo7TxRgqE+zuqWFvjzI47Auz15hDGTPGi+BHr/LsB5APt1WFCzPMCO57987fivOfYu/6tr3KNRJCJLDYY9ggTM+5r/OizMiCfv2lTbltrFDVGcNUivDaBvuf7qmhJ2bsXxguApMNLFPEWhIPQHPWQ5Xiw0Fn045AQUj+hV00TSRMBHEKNXEKJG5PiJJ6i64Tfw51DkjjBHv8AQoV7J+kqVTIAAAAAElFTkSuQmCC",
+                                symbolSize: [40, 40],
+                                symbolOffset: [20, 0],
+                                z: 2,
+                                data: [],
+                            },
+                        ],
+                    }
+                    let seriesStyle = {
+                        showBackground: true,
+                        backgroundStyle: {color: "rgba(241, 248, 255, 0.1)", opacity: 1},
+                        itemStyle: {
+                            shadowBlur: 0,
+                            shadowColor: "#5c1717",
+                            shadowOffsetX: 0,
+                            shadowOffsetY: 0,
+                            borderRadius: 0,
+                            borderColor: "#292929",
+                            borderWidth: 0,
+                            borderType: "dotted",
+                        },
+                        label: {
+                            show: false,
+                            position: "right",
+                            color: "#fff",
+                            fontSize: 12,
+                        },
+                        barWidth: 10,
+                        z: 1,
+                    }
+
+                    // 指定图表的数据
+                    let data = obj.data
+                    //数据处理 开始
+                    let xKey = "value"
+                    let yKey = "time"
+                    let sKey = "name"
+                    let dataSeries = deepCopy(option.series)
+                    let seriesArr = []
+                    let dataColumn = []
+                    const colorList = option.color
+                    data.forEach((item) => seriesArr.push(item[sKey]))
+                    seriesArr = [...new Set(seriesArr)]
+                    if (xKey && xKey) {
+                        data.forEach((item) => dataColumn.push(item[yKey]))
+                        dataColumn = [...new Set(dataColumn)]
+                        seriesArr.forEach((item) => {
+                            let data1 = []
+                            data.forEach((oitem) => {
+                                if (oitem[sKey] === item) {
+                                    data1.push({
+                                        name: oitem[yKey],
+                                        value: oitem[xKey],
+                                    })
+                                }
+                            })
+                            dataSeries.unshift({
+                                name: item,
+                                data: data1,
+                                type: "bar",
+                            })
+                        })
+                    }
+                    let seriesObj = dataSeries.map((item) => {
+                        if (item.useSeriesStyle != false) {
+                            return (item = _.merge(item, seriesStyle, {
+                                itemStyle: {
+                                    color: (params) => {
+                                        if (params.dataIndex < 3) {
+                                            return colorList[0]
+                                        } else {
+                                            return colorList[1]
+                                        }
+                                    },
+                                },
+                            }))
+                        } else {
+                            return (item = item)
+                        }
+                    })
+                    let arr1 = [],
+                        arr2 = []
+                    seriesObj[0].data.sort((a, b) => {
+                        return b.value - a.value
+                    })
+                    seriesObj[0].data.forEach((item) => {
+                        arr1.push(item.name)
+                        arr2.push(item.value)
+                    })
+                    option.yAxis[0].data = arr1
+                    option.yAxis[1].data = arr2
+                    option.yAxis[0].axisLabel.formatter = function (value, index) {
+                        return `No.${index + 1} ${value}`
+                    }
+                    if (seriesObj.length) {
+                        let dataArr = seriesObj[0].data
+                        let maxNumber = dataArr[0].value
+                        let arr = []
+                        dataArr.forEach((item) => {
+                            arr.push({
+                                value: item.value,
+                                symbolPosition: "end",
+                            })
+                        })
+                        seriesObj[1].data = arr
+                    }
+                    // 数据处理完
+                    option.series = seriesObj
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option)
+                }
+            })
+        })
+    </script>
+    <!-- 组件商铺排名结束-->
+
+    <!-- 组件商品销量排行开始-->
+    <div id="item-goods-top-title">
+        <p class="">商品销量排行榜</p>
+    </div>
+    <style>
+        #item-goods-top-title {
+            line-height: 1.5;
+            font-size: 25px;
+            text-align: center;
+            font-weight: normal;
+            font-style: normal;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+        }
+
+        #item-goods-top-title .rich-text {
+            white-space: nowrap;
+            overflow: visible;
+            line-height: 1.2;
+            letter-spacing: -1px;
+            margin-top: -2px;
+        }
+    </style>
+    <div id="item-goods-top-table"></div>
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+                url: "/data/sales/top",
+                method: "GET",
+                success: function (obj) {
+                    // 基于准备好的dom，初始化echarts实例
+                    const myChart = echarts.init(
+                        document.getElementById("item-goods-top-table")
+                    )
+                    // 指定图表的配置项
+                    let option = {
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        grid: {
+                            top: 15,
+                            left: 15,
+                            right: 15,
+                            bottom: 15,
+                            containLabel: true,
+                        },
+                        legend: {
+                            show: false,
+                            top: "top",
+                            left: "center",
+                            orient: "horizontal",
+                            itemWidth: 8,
+                            itemHeight: 8,
+                            itemGap: 10,
+                            icon: "rect",
+                            textStyle: {color: "#ffffff", fontSize: 12, lineHeight: 14},
+                        },
+                        xAxis: {
+                            show: false,
+                            axisLabel: {
+                                show: false,
+                                color: "#ffffff",
+                                fontSize: 12,
+                                margin: 8,
+                                height: "14px",
+                            },
+                            axisLine: {
+                                show: true,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            axisTick: {
+                                show: false,
+                                lineStyle: {color: "#27292d", type: "solid", width: 1},
+                            },
+                            splitLine: {
+                                show: false,
+                                lineStyle: {color: "#27292d", type: "dashed", width: 1},
+                            },
+                            data: [],
+                            type: "value",
+                        },
+                        yAxis: [
+                            {
+                                type: "category",
+                                show: true,
+                                inverse: true,
+                                axisLabel: {
+                                    show: true,
+                                    color: "#ffffff",
+                                    fontSize: 18,
+                                    margin: 20,
+                                    verticalAlign: "middle",
+                                },
+                                axisLine: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "solid", width: 1},
+                                },
+                                axisTick: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "solid", width: 1},
+                                },
+                                splitLine: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "dashed", width: 1},
+                                },
+                                data: [],
+                            },
+                            {
+                                type: "category",
+                                show: true,
+                                inverse: true,
+                                axisLabel: {
+                                    show: true,
+                                    color: "#ffffff",
+                                    fontSize: 18,
+                                    margin: 20,
+                                },
+                                axisLine: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "solid", width: 1},
+                                },
+                                axisTick: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "solid", width: 1},
+                                },
+                                splitLine: {
+                                    show: false,
+                                    lineStyle: {color: "#27292d", type: "dashed", width: 1},
+                                },
+                                data: [],
+                                position: "right",
+                            },
+                        ],
+                        color: [
+                            {
+                                type: "linear",
+                                x: 0,
+                                y: 0,
+                                x2: 1,
+                                y2: 0,
+                                colorStops: [
+                                    {offset: 0, color: "#399efe"},
+                                    {offset: 0.82, color: "#06f6f0"},
+                                ],
+                            },
+                            "#FFFFFF",
+                        ],
+                        series: [
+                            {
+                                name: "",
+                                type: "pictorialBar",
+                                useSeriesStyle: false,
+                                symbol:
+                                    "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAKJSURBVHgBvZfPbxJBFMe/M7tAaUospQFLNHrqwWuTxnAw/AH2aI8aD9YY/V+8aJqgidFjPcrRg/FgtAlXD71oYsQWiqXSUAu7M74HAUkF9kEWP5tlwu5jvvPmx3sPBQG3dqxTrSJugCSiWPAsYlrB4XfGwtdAU7dxGnXx6+19dSzpUwUJ7h8h7StkekJB+AYtFzisJVH7vKlaEwvnXtk0fiMrFRw2AL+N8u4jVRML55/ZSx6QQQjoFirvH6pvgcK55/aKtlhGiHgeah8fqK+Dz/TgF/Y0bFHGdZG68dReHiq8/sSmwpreYZgo0rlt2jeDwtd2bNSJIItZ4yDLJ6UvnDpDytF0QmcMnxA+nn1hrxn+uo6CYwJ77eYf20VvMm/XlMIWtat0J+guWYsitW8kP2avy18w72KBLiE0PVu2K3p+IHyvGIOCpJ/IEi5oirvzEmNSvTlEtA95ze/WIIBifkLTh0hYWWwE2owZ2CCdJDNBLJZ4syqw6ayzhpyGwCYBIZrzqdB2T2BTEth0c7ircCYxps1TENgUIaBTOGjZFDKlceK04/md6CyTs023rXGsjDg5FEigTPYblFB5szVgsWfpObWiae4q48TNJtD8Xqc5l+5ugyIJFUloKgwt7bu7qq5fbyrfieMA/wl1ip/cdo7TxRgqE+zuqWFvjzI47Auz15hDGTPGi+BHr/LsB5APt1WFCzPMCO57987fivOfYu/6tr3KNRJCJLDYY9ggTM+5r/OizMiCfv2lTbltrFDVGcNUivDaBvuf7qmhJ2bsXxguApMNLFPEWhIPQHPWQ5Xiw0Fn045AQUj+hV00TSRMBHEKNXEKJG5PiJJ6i64Tfw51DkjjBHv8AQoV7J+kqVTIAAAAAElFTkSuQmCC",
+                                symbolSize: [40, 40],
+                                symbolOffset: [20, 0],
+                                z: 2,
+                                data: [],
+                            },
+                        ],
+                    }
+                    let seriesStyle = {
+                        showBackground: true,
+                        backgroundStyle: {color: "rgba(241, 248, 255, 0.1)", opacity: 1},
+                        itemStyle: {
+                            shadowBlur: 0,
+                            shadowColor: "#5c1717",
+                            shadowOffsetX: 0,
+                            shadowOffsetY: 0,
+                            borderRadius: 0,
+                            borderColor: "#292929",
+                            borderWidth: 0,
+                            borderType: "dotted",
+                        },
+                        label: {
+                            show: false,
+                            position: "right",
+                            color: "#fff",
+                            fontSize: 12,
+                        },
+                        barWidth: 10,
+                        z: 1,
+                    }
+
+                    // 指定图表的数据
+                    let data = obj.data
+
+                    //数据处理 开始
+                    let xKey = "value"
+                    let yKey = "time"
+                    let sKey = "name"
+                    let dataSeries = deepCopy(option.series)
+                    let seriesArr = []
+                    let dataColumn = []
+                    const colorList = option.color
+                    data.forEach((item) => seriesArr.push(item[sKey]))
+                    seriesArr = [...new Set(seriesArr)]
+                    if (xKey && xKey) {
+                        data.forEach((item) => dataColumn.push(item[yKey]))
+                        dataColumn = [...new Set(dataColumn)]
+                        seriesArr.forEach((item) => {
+                            let data1 = []
+                            data.forEach((oitem) => {
+                                if (oitem[sKey] === item) {
+                                    data1.push({
+                                        name: oitem[yKey],
+                                        value: oitem[xKey],
+                                    })
+                                }
+                            })
+                            dataSeries.unshift({
+                                name: item,
+                                data: data1,
+                                type: "bar",
+                            })
+                        })
+                    }
+                    let seriesObj = dataSeries.map((item) => {
+                        if (item.useSeriesStyle != false) {
+                            return (item = _.merge(item, seriesStyle, {
+                                itemStyle: {
+                                    color: (params) => {
+                                        if (params.dataIndex < 3) {
+                                            return colorList[0]
+                                        } else {
+                                            return colorList[1]
+                                        }
+                                    },
+                                },
+                            }))
+                        } else {
+                            return (item = item)
+                        }
+                    })
+                    let arr1 = [],
+                        arr2 = []
+                    seriesObj[0].data.sort((a, b) => {
+                        return b.value - a.value
+                    })
+                    seriesObj[0].data.forEach((item) => {
+                        arr1.push(item.name)
+                        arr2.push(item.value)
+                    })
+                    option.yAxis[0].data = arr1
+                    option.yAxis[1].data = arr2
+                    option.yAxis[0].axisLabel.formatter = function (value, index) {
+                        return `No.${index + 1} ${value}`
+                    }
+                    if (seriesObj.length) {
+                        let dataArr = seriesObj[0].data
+                        let maxNumber = dataArr[0].value
+                        let arr = []
+                        dataArr.forEach((item) => {
+                            arr.push({
+                                value: item.value,
+                                symbolPosition: "end",
+                            })
+                        })
+                        seriesObj[1].data = arr
+                    }
+                    // 数据处理完
+                    option.series = seriesObj
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option)
+                }
+            })
+        })
+    </script>
+    <!-- 组件商品销量排行结束-->
+
+    <!-- 组件图片背景开始-->
+    <div id="itemc412da80-b633-11ec-a585-132c1d24786f">
+        <img
+                src="./static/images/bg.png"
+                alt=""
+        />
+    </div>
+    <style>
+        #itemc412da80-b633-11ec-a585-132c1d24786f {
+            width: 1920px;
+            height: 1080px;
+        }
+
+        #itemc412da80-b633-11ec-a585-132c1d24786f img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <!-- 组件图片背景结束-->
+</div>
+</body>
+<script>
+    $(function () {
+        /**
+         *
+         * 自适应宽度处理
+         * 通过当前网页具体宽高 / 设计稿画板实际宽高 得到比例最终缩放页面
+         *
+         * 如果是同比例，比如12:9的尺寸比例，不管分辨率多大，都是能完全适应且不会被拉伸
+         * 如果不是在同一比例，简单来就像图片改变了比例就会被拉升
+         *
+         * 具体大小可自行设置，下面这句话也可以不要，修改style.css样式也可以，方法很多
+         *
+         */
+        document.getElementsByClassName("container")[0].style.transform = `
+      scaleX(${window.innerWidth / 1920}) 
+      scaleY(${window.innerHeight / 1080})`
+
+        /**
+         *
+         * 窗口发生改变自动刷新页面
+         * 这样做不太友好，一般做法当前页面大小发生改变去重新加载echarts对象
+         * 最好自行修改一下，当然。不要也可以，不会影响功能使用
+         *
+         */
+        $(window).resize(() => location.reload())
+    })
+
+    /**
+     *
+     * @param {*} id
+     * @param {*} animations
+     * 执行动画库函数【不用修改,可自行调整位置】
+     * 声明初始值
+     * 判断动画是否结束
+     */
+    function playAnimation(id, animations) {
+        let index = 0
+        let ele = document.querySelector(id)
+        setAnimation(ele, animations[index])
+        ele.addEventListener("webkitAnimationEnd", function () {
+            if (index < animations.length - 1) {
+                index++
+                setAnimation(ele, animations[index])
+            }
+        })
+    }
+
+    /**
+     *
+     * @param {*} element
+     * @param {*} animation
+     * 执行动画库函数【不用修改,可自行调整位置】
+     * 取index对应的动画
+     * 给元素animation重新赋值
+     */
+    function setAnimation(element, animation) {
+        const action = `${animation.duration * 1000}ms ease ${
+            animation.delayed * 1000
+        }ms ${
+            animation.loop ? "infinite" : animation.frequency
+        } normal both running ${animation.type}`
+        element.style.animation = action
+    }
+</script>
+
+</html>
